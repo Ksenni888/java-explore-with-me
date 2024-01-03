@@ -1,6 +1,8 @@
-package ru.practicum.stats.model;
+package ru.practicum.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -9,9 +11,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "stats")
 public class Stats {
@@ -30,6 +35,5 @@ public class Stats {
     private String ip;
 
     @Column(name = "timestamp")
-    private String timestamp;
-
+    private LocalDateTime timestamp;
 }

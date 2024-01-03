@@ -1,10 +1,9 @@
-package ru.practicum.stats.mapper;
+package ru.practicum.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.practicum.stats.StatsDto;
-import ru.practicum.stats.model.Stats;
-
+import ru.practicum.StatsDto;
+import ru.practicum.model.Stats;
 
 @Component
 @RequiredArgsConstructor
@@ -13,6 +12,7 @@ public class StatsMapper {
         Stats stats = new Stats();
         stats.setApp(statsDto.getApp());
         stats.setUri(statsDto.getUri());
+        stats.setIp(statsDto.getIp());
         stats.setTimestamp(statsDto.getTimestamp());
         return stats;
     }

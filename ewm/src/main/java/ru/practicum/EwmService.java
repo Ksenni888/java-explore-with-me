@@ -3,10 +3,8 @@ package ru.practicum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import ru.practicum.stats.StatsDto;
-import ru.pructicum.stats.StatsClient;
 
-
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @RequiredArgsConstructor
@@ -20,7 +18,7 @@ public class EwmService {
         statsDto.setApp("ewm-main-service");
         statsDto.setIp("192.163.0.1");
         statsDto.setUri("/events/1");
-        statsDto.setTimestamp("2022-09-06 11:00:23");
+        statsDto.setTimestamp(LocalDateTime.now());
 
         Random random = new Random();
         client.saveStats(statsDto);
