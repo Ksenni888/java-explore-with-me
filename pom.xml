@@ -19,7 +19,7 @@
 
     <modules>
         <module>stats</module>
-        <module>ewm</module>
+        <module>ewm-service</module>
     </modules>
 
         <properties>
