@@ -1,7 +1,10 @@
 package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.StatsDto;
 import ru.practicum.StatsDtoOutput;
 import ru.practicum.exeption.StatsValidationException;
@@ -17,18 +20,22 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class StatsServiceImpl implements StatsService {
+    private static final Logger log = LoggerFactory.getLogger(StatsServiceImpl.class);
     private final StatsRepository statsRepository;
     private final StatsMapper statsMapper;
 
     @Override
     public StatsDto saveStats(StatsDto statsDto) {
         statsRepository.save(statsMapper.toStats(statsDto));
+        log.info("Save new statistic information");
         return statsDto;
     }
 
     @Override
     public List<StatsDtoOutput> getStats(String start, String end, List<String> uris, Boolean unique) {
+        log.info("Get statistic by parameters");
         LocalDateTime startTime = parseTime(decode(start));
         LocalDateTime endTime = parseTime(decode(end));
         List<StatsDtoOutput> statsDtoOutputs;
