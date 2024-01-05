@@ -27,6 +27,7 @@ public class StatsServiceImpl implements StatsService {
     private final StatsMapper statsMapper;
 
     @Override
+    @Transactional
     public StatsDto saveStats(StatsDto statsDto) {
         statsRepository.save(statsMapper.toStats(statsDto));
         log.info("Save new statistic information");
