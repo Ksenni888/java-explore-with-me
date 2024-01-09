@@ -2,6 +2,13 @@ DROP TABLE IF EXISTS categories;
 
 CREATE TABLE IF NOT EXISTS categories (
 categories_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-categories_name VARCHAR(255) NOT NULL,
+categories_name VARCHAR(50) NOT NULL,
 UNIQUE (categories_name)
+);
+
+CREATE TABLE IF NOT EXISTS users (
+user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+user_email VARCHAR(255) NOT NULL,
+user_name VARCHAR(255) NOT NULL,
+UNIQUE (user_email)
 );
