@@ -19,7 +19,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         log.warn("Incorrectly made request.");
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Incorrectly made request.", e.getMessage(), LocalDateTime.now());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Incorrectly made request.", "Field: name. Error: must not be blank. Value: null", LocalDateTime.now());
     }
 
     @ExceptionHandler

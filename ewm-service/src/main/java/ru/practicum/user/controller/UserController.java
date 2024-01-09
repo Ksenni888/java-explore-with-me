@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.user.dto.UserDto;
+import ru.practicum.user.service.UserService;
 
 import javax.validation.Valid;
 
@@ -14,10 +16,11 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Validated
 public class UserController {
+    private final UserService userService;
 
     @PostMapping("/admin/users")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public UserDto addUser(@Valid @RequestBody UserDto userDto) {
-        return null;
+        return userService.addUser(userDto);
     }
 }
