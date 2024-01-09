@@ -47,8 +47,8 @@ public class CategoryController {
 
     @GetMapping("/categories")
     @ResponseStatus(HttpStatus.OK)
-    public List<CategoryDto> getCategories(@RequestParam (defaultValue = "0") @Min(0) Integer from,
-                                         @RequestParam (defaultValue = "10") @Min(1) Integer size) {
+    public List<CategoryDto> getCategories(@RequestParam (required = false, defaultValue = "0") @Min(0) Integer from,
+                                         @RequestParam (required = false, defaultValue = "10") @Min(1) Integer size) {
         return categoryService.getCategories(PageRequest.of(from / size, size));
     }
 
