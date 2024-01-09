@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS categories;
+
+CREATE TABLE IF NOT EXISTS categories (
+categories_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+categories_name VARCHAR(255) NOT NULL,
+UNIQUE (categories_name)
+);
