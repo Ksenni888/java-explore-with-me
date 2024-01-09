@@ -3,6 +3,7 @@ package ru.practicum.category.service;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.category.dto.CategoryDto;
@@ -10,6 +11,9 @@ import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.exeption.ObjectNotFoundException;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,17 +44,30 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryDto updateCategory(long catId, CategoryDto categoryDto) {
-//        if (!categoryRepository.existsById(catId)) {
-//            throw new ObjectNotFoundException(
-//                    String.format("Category with id=%d was not found", catId));
-//        }
         Category category = categoryRepository.findById(catId).orElseThrow(
                 () -> new ObjectNotFoundException(
-                String.format("Category with id=%d was not found", catId)));
+                        String.format("Category with id=%d was not found", catId)));
         category.setName(categoryDto.getName());
         log.info("Update category");
         return categoryMapper.toDto(categoryRepository.save(category));
     }
 
 
+    @Override
+    public List<CategoryDto> getCategories(Pageable pageable) {
+        List<CategoryDto> allCategories = categoryRepository.findAll(pageable).stream()
+                .map(x -> categoryMapper.toDto(x))
+                .collect(Collectors.toList());
+        log.info("Find all categories with parameters");
+        return allCategories;
+    }
+
+    @Override
+    public CategoryDto getCategory(long catId) {
+        Category category = categoryRepository.findById(catId).orElseThrow(
+                () -> new ObjectNotFoundException(String.format("Category with id=%d was not found", catId))
+        );
+        log.info("Find category by id");
+        return categoryMapper.toDto(category);
+    }
 }

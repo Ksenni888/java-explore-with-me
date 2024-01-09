@@ -1,9 +1,11 @@
 package ru.practicum.category.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +17,8 @@ import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.service.CategoryService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,4 +44,17 @@ public class CategoryController {
     public CategoryDto updateCategory(@PathVariable long catId, @Valid @RequestBody CategoryDto categoryDto) {
        return categoryService.updateCategory(catId, categoryDto);
     }
+
+    @GetMapping("/categories")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CategoryDto> getCategories(@RequestParam (defaultValue = "0") @Min(0) Integer from,
+                                         @RequestParam (defaultValue = "10") @Min(1) Integer size) {
+        return categoryService.getCategories(PageRequest.of(from / size, size));
+    }
+
+@GetMapping("/categories/{catId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CategoryDto getCategory(@PathVariable long catId) {
+        return categoryService.getCategory(catId);
+}
 }
