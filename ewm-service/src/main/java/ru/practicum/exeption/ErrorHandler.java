@@ -36,4 +36,11 @@ public class ErrorHandler {
         return new ErrorResponse(HttpStatus.NOT_FOUND, "The required object was not found.", e.getMessage(), LocalDateTime.now());
     }
 
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleTimeViolationException(final TimeViolationException e) {
+        log.warn("For the requested operation the conditions are not met.");
+        return new ErrorResponse(HttpStatus.FORBIDDEN, "For the requested operation the conditions are not met.", e.getMessage(), LocalDateTime.now());
+    }
+
 }

@@ -28,33 +28,32 @@ public class CategoryController {
 
     @PostMapping("/admin/categories")
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDto addCategory(@Valid @RequestBody CategoryDto categoryDto)
-    {
+    public CategoryDto addCategory(@Valid @RequestBody CategoryDto categoryDto) {
         return categoryService.addCategory(categoryDto);
     }
 
     @DeleteMapping("/admin/categories/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable long catId) {
-    categoryService.deleteCategory(catId);
+        categoryService.deleteCategory(catId);
     }
 
     @PatchMapping("/admin/categories/{catId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryDto updateCategory(@PathVariable long catId, @Valid @RequestBody CategoryDto categoryDto) {
-       return categoryService.updateCategory(catId, categoryDto);
+        return categoryService.updateCategory(catId, categoryDto);
     }
 
     @GetMapping("/categories")
     @ResponseStatus(HttpStatus.OK)
-    public List<CategoryDto> getCategories(@RequestParam (required = false, defaultValue = "0") @Min(0) Integer from,
-                                         @RequestParam (required = false, defaultValue = "10") @Min(1) Integer size) {
+    public List<CategoryDto> getCategories(@RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+                                           @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
         return categoryService.getCategories(PageRequest.of(from / size, size));
     }
 
-@GetMapping("/categories/{catId}")
+    @GetMapping("/categories/{catId}")
     @ResponseStatus(HttpStatus.OK)
     public CategoryDto getCategory(@PathVariable long catId) {
         return categoryService.getCategory(catId);
-}
+    }
 }

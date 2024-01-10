@@ -11,5 +11,6 @@ public interface UserService {
     UserDto addUser(UserDto userDto);
 
     List<UserDto> getUsers(List<Long> ids, Pageable pageable);
+
     void deleteUser(@PathVariable long userId);
 }
