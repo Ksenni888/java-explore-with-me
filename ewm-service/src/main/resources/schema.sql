@@ -1,4 +1,4 @@
-drop table IF EXISTS categories, users, events, compilation;
+--drop table IF EXISTS categories, users, events, compilation;
 
 create TABLE IF NOT EXISTS categories (
 category_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

@@ -1,9 +1,7 @@
 package ru.practicum.event.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.GeneratorType;
 import ru.practicum.category.model.Category;
 import ru.practicum.user.model.User;
 

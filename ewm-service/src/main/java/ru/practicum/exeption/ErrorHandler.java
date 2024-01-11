@@ -19,7 +19,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         log.warn("Incorrectly made request.");
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Incorrectly made request.", "Field: name. Error: must not be blank. Value: null", LocalDateTime.now());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Incorrectly made request.", e.getMessage(), LocalDateTime.now());
     }
 
     @ExceptionHandler
@@ -38,9 +38,16 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handleTimeViolationException(final TimeViolationException e) {
+    public ErrorResponse handleRulesViolationException(final RulesViolationException e) {
         log.warn("For the requested operation the conditions are not met.");
         return new ErrorResponse(HttpStatus.FORBIDDEN, "For the requested operation the conditions are not met.", e.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidRequestException(final InvalidRequestException e) {
+        log.warn("Incorrectly made request.");
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Incorrectly made request.", e.getMessage(), LocalDateTime.now());
     }
 
 }
