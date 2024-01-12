@@ -5,13 +5,16 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.event.model.Location;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class UpdateEventUserRequest {
+public class UpdateEventAdminRequest {
     private String annotation;
     private long category;
+    @Size(min = 20, max = 7000)
     private String description;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
@@ -19,6 +22,8 @@ public class UpdateEventUserRequest {
     private Boolean paid;
     private Integer participantLimit;
     private Boolean requestModeration;
+    @NotNull
     private String stateAction;
+    @Size(min = 3, max = 120)
     private String title;
 }

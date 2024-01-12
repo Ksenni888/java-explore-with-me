@@ -2,7 +2,6 @@ package ru.practicum.event.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.mapper.CategoryMapper;
 import ru.practicum.category.model.Category;
 import ru.practicum.event.dto.EventFullDto;
@@ -11,13 +10,10 @@ import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
 import ru.practicum.event.model.Location;
-import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.user.mapper.UserMapper;
 import ru.practicum.user.model.User;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -67,14 +63,14 @@ public class EventMapper {
         return eventFullDto;
     }
 
-    public EventShortDto toShort(Event event, CategoryDto categoryDto, UserShortDto userShortDto, Integer views) {
+    public EventShortDto toShort(Event event, Long views) {
         EventShortDto eventShortDto = new EventShortDto();
         eventShortDto.setId(event.getId());
         eventShortDto.setAnnotation(event.getAnnotation());
-        eventShortDto.setCategory(categoryDto);
+        eventShortDto.setCategory(categoryMapper.toDto(event.getCategory()));
         eventShortDto.setConfirmedRequests(event.getConfirmedRequests());
         eventShortDto.setEventDate(event.getEventDate());
-        eventShortDto.setInitiator(userShortDto);
+        eventShortDto.setInitiator(userMapper.toShort(event.getInitiator()));
         eventShortDto.setPaid(event.getPaid());
         eventShortDto.setTitle(event.getTitle());
         eventShortDto.setViews(views);

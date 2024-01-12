@@ -1,4 +1,4 @@
---drop table IF EXISTS categories, users, events, compilation;
+drop table IF EXISTS categories, users, events, compilation;
 
 create TABLE IF NOT EXISTS categories (
 category_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -30,8 +30,8 @@ published_on TIMESTAMP WITHOUT TIME ZONE,
 request_moderation BOOLEAN,
 state VARCHAR(50),
 title VARCHAR(255),
-FOREIGN KEY(category_id) REFERENCES categories(category_id),
-FOREIGN KEY(initiator_id) REFERENCES users(user_id)
+FOREIGN KEY(category_id) REFERENCES categories(category_id) ON DELETE CASCADE,
+FOREIGN KEY(initiator_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 create TABLE IF NOT EXISTS compilation (

@@ -7,40 +7,36 @@ import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.event.model.Location;
 import ru.practicum.user.dto.UserShortDto;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Getter
 @Setter
 public class EventFullDto {
     private long id;
-//    @NotBlank
+    //    @NotBlank
     private String annotation;
-//    @NotBlank
+    //    @NotBlank
     private CategoryDto category;
     private Integer confirmedRequests;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdOn;
     private String description;
- //   @NotBlank
+    //   @NotBlank
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-//    @NotBlank
+    //    @NotBlank
     private UserShortDto initiator;
-//    @NotBlank
+    //    @NotBlank
     private Location location;
-//    @NotBlank
+    //    @NotBlank
     private Boolean paid;
- //   @PositiveOrZero
+    //   @PositiveOrZero
     private Integer participantLimit;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
     private Boolean requestModeration;
     private String state;
- //   @NotBlank
+    //   @NotBlank
     private String title;
     private Long views;
-
 }
