@@ -27,21 +27,21 @@ public class UserController {
 
     @PostMapping("/admin/users")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto addUser(@Valid @RequestBody UserDto userDto) {
-        return userService.addUser(userDto);
+    public UserDto addUserAdmin(@Valid @RequestBody UserDto userDto) {
+        return userService.addUserAdmin(userDto);
     }
 
     @GetMapping("/admin/users")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserDto> getUsers(@RequestParam(required = false) List<Long> ids,
+    public List<UserDto> getUsersAdmin(@RequestParam(required = false) List<Long> ids,
                                   @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
                                   @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
-        return userService.getUsers(ids, PageRequest.of(from / size, size));
+        return userService.getUsersAdmin(ids, PageRequest.of(from / size, size));
     }
 
     @DeleteMapping("/admin/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable long userId) {
-        userService.deleteUser(userId);
+    public void deleteUserAdmin(@PathVariable long userId) {
+        userService.deleteUserAdmin(userId);
     }
 }

@@ -1,4 +1,4 @@
-drop table IF EXISTS categories, users, events, compilation;
+--drop table IF EXISTS categories, users, events, requests, compilation;
 
 create TABLE IF NOT EXISTS categories (
 category_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -33,6 +33,16 @@ title VARCHAR(255),
 FOREIGN KEY(category_id) REFERENCES categories(category_id) ON DELETE CASCADE,
 FOREIGN KEY(initiator_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS requests (
+request_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+created TIMESTAMP                         NOT NULL,
+event_id BIGINT                           NOT NULL,
+requester_id BIGINT                       NOT NULL,
+status VARCHAR(15)                        NOT NULL,
+FOREIGN KEY(event_id) REFERENCES events(event_id),
+FOREIGN KEY(requester_id) REFERENCES users(user_id));
+
 
 create TABLE IF NOT EXISTS compilation (
 compilation_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,

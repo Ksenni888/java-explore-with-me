@@ -24,13 +24,13 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public UserDto addUser(UserDto userDto) {
+    public UserDto addUserAdmin(UserDto userDto) {
         log.info("Add new user");
         return userMapper.toDto(userRepository.save(userMapper.toUser(userDto)));
     }
 
     @Override
-    public List<UserDto> getUsers(List<Long> ids, Pageable pageable) {
+    public List<UserDto> getUsersAdmin(List<Long> ids, Pageable pageable) {
         log.info("Get list of users by ids");
         if (ids == null || ids.isEmpty()) {
             return userRepository.findAll(pageable).stream()
@@ -44,7 +44,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(long userId) {
+    public void deleteUserAdmin(long userId) {
         if (!userRepository.existsById(userId)) {
             throw new ObjectNotFoundException(String.format("User with id=%d was not found", userId));
         }

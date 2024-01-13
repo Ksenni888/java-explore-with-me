@@ -83,7 +83,7 @@ public class EventController {
 
     @GetMapping("/events")
     @ResponseStatus(HttpStatus.OK)
-    List<EventShortDto> getEventsPublic(
+    public List<EventShortDto> getEventsPublic(
             @RequestParam(required = false) String text,
             @RequestParam(required = false) List<Long> categories,
             @RequestParam(required = false) Boolean paid,
@@ -99,4 +99,12 @@ public class EventController {
         return eventService.getEventsPublic(text, categories, paid, rangeStart, rangeEnd,
                 onlyAvailable, sort, from, size, request);
     }
+
+    @GetMapping("/events/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public EventFullDto getEventByIdPublic (@PathVariable long id, HttpServletRequest request) {
+       return eventService.getEventByIdPublic(id, request);
+    }
+
+
 }

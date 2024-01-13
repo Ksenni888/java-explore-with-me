@@ -8,9 +8,9 @@ import ru.practicum.user.dto.UserDto;
 import java.util.List;
 
 public interface UserService {
-    UserDto addUser(UserDto userDto);
+    UserDto addUserAdmin(UserDto userDto);
 
-    List<UserDto> getUsers(List<Long> ids, Pageable pageable);
+    List<UserDto> getUsersAdmin(List<Long> ids, Pageable pageable);
 
-    void deleteUser(@PathVariable long userId);
+    void deleteUserAdmin(@PathVariable long userId);
 }

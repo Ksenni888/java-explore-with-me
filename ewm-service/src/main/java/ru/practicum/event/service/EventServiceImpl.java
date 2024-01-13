@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import ru.practicum.StatsClient;
 import ru.practicum.StatsDto;
 import ru.practicum.category.dto.CategoryDto;
@@ -311,6 +312,23 @@ public class EventServiceImpl implements EventService {
             return eventRepository.findAll(specification, pageable).getContent().stream().map(x -> eventMapper.toShort(x, 0L)).sorted(Comparator.comparing(EventShortDto::getViews)).collect(Collectors.toList());
         }
         throw new InvalidRequestException("Sort cat be EVENT_DATE or VIEWS");
+    }
+
+    @Override
+    public EventFullDto getEventByIdPublic (@PathVariable long id, HttpServletRequest request) {
+        StatsDto statsDto = new StatsDto();
+        statsDto.setIp(request.getRemoteAddr());
+        statsDto.setUri(request.getRequestURI());
+        statsDto.setApp("ewm-main-service");
+        statsDto.setTimestamp(LocalDateTime.now());
+        client.saveStats(statsDto);
+        Event event = eventRepository.findById(id).orElseThrow(
+                () -> new ObjectNotFoundException(String.format("Event with id=%d was not found", id)));
+
+        if (event.getState() != EventState.PUBLISHED) {
+            throw new ObjectNotFoundException(String.format("Event with id=%d was not found", id));
+        }
+        return eventMapper.toFull(event, 0L);
     }
 
 }
