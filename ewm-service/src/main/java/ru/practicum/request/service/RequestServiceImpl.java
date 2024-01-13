@@ -43,7 +43,9 @@ public class RequestServiceImpl implements RequestService {
             throw new RulesViolationException("Your request added");
         }
         Request request = new Request();
-        if (!event.getRequestModeration()) { request.setStatus(RequestStatus.CONFIRMED); } else {
+        if (!event.getRequestModeration()) {
+            request.setStatus(RequestStatus.CONFIRMED);
+        } else {
             request.setStatus(RequestStatus.PENDING);
         }
 

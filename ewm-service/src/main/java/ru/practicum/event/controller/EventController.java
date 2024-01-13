@@ -102,9 +102,7 @@ public class EventController {
 
     @GetMapping("/events/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto getEventByIdPublic (@PathVariable long id, HttpServletRequest request) {
-       return eventService.getEventByIdPublic(id, request);
+    public EventFullDto getEventByIdPublic(@PathVariable long id, HttpServletRequest request) {
+        return eventService.getEventByIdPublic(id, request);
     }
-
-
 }

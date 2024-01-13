@@ -315,7 +315,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public EventFullDto getEventByIdPublic (@PathVariable long id, HttpServletRequest request) {
+    public EventFullDto getEventByIdPublic(@PathVariable long id, HttpServletRequest request) {
         StatsDto statsDto = new StatsDto();
         statsDto.setIp(request.getRemoteAddr());
         statsDto.setUri(request.getRequestURI());
