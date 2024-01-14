@@ -1,4 +1,4 @@
-drop table IF EXISTS categories, users, events, requests, compilation;
+--drop table IF EXISTS categories, users, events, requests, compilations;
 
 create TABLE IF NOT EXISTS categories (
 category_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -44,8 +44,17 @@ FOREIGN KEY(event_id) REFERENCES events(event_id),
 FOREIGN KEY(requester_id) REFERENCES users(user_id));
 
 
-create TABLE IF NOT EXISTS compilation (
+create TABLE IF NOT EXISTS compilations (
 compilation_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 pinned BOOLEAN,
 title VARCHAR(255)
+
+);
+
+create TABLE IF NOT EXISTS compilation_event (
+event_id BIGINT NOT NULL,
+compilation_id BIGINT NOT NULL,
+PRIMARY KEY (compilation_id, event_id),
+FOREIGN KEY(event_id) REFERENCES events(event_id) ON DELETE CASCADE,
+FOREIGN KEY(compilation_id) REFERENCES compilations(compilation_id) ON DELETE CASCADE
 );

@@ -29,6 +29,13 @@ import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exeption.InvalidRequestException;
 import ru.practicum.exeption.ObjectNotFoundException;
 import ru.practicum.exeption.RulesViolationException;
+import ru.practicum.request.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.request.dto.EventRequestStatusUpdateResult;
+import ru.practicum.request.dto.ParticipationRequestDto;
+import ru.practicum.request.mapper.RequestMapper;
+import ru.practicum.request.model.Request;
+import ru.practicum.request.model.RequestStatus;
+import ru.practicum.request.repository.RequestRepository;
 import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.user.mapper.UserMapper;
 import ru.practicum.user.model.User;
@@ -51,11 +58,13 @@ import java.util.stream.Collectors;
 public class EventServiceImpl implements EventService {
     private static final Logger log = LoggerFactory.getLogger(EventServiceImpl.class);
     private final EventRepository eventRepository;
+    private final RequestRepository requestRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final EventMapper eventMapper;
     private final UserMapper userMapper;
     private final CategoryMapper categoryMapper;
+    private final RequestMapper requestMapper;
     private final StatsClient client;
 
     @Override
@@ -149,8 +158,81 @@ public class EventServiceImpl implements EventService {
                 throw new InvalidRequestException("Unknown state, it must be: SEND_TO_REVIEW or CANCEL_REVIEW");
             }
         }
-
+        log.info("Update Event");
         return eventMapper.toFull(eventRepository.save(event), 0L);
+    }
+
+    @Override
+    public List<ParticipationRequestDto> getRequestsUserToEventPrivate(long userId, long eventId) {
+        if (!eventRepository.existsById(eventId)) {
+            throw new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId));
+        }
+        if (!userRepository.existsById(userId)) {
+            throw new ObjectNotFoundException(String.format("User with id=%d not found", userId));
+        }
+        log.info("All requests to event");
+        return requestRepository.findAllByEvent(eventId).stream()
+                .map(x -> requestMapper.toDto(x))
+                .collect(Collectors.toList());
+
+    }
+
+    @Override
+    public EventRequestStatusUpdateResult updateEventRequestStatusPrivate(long userId, long eventId,
+                                                                          EventRequestStatusUpdateRequest updateRequest) {
+        EventRequestStatusUpdateResult updateResult = new EventRequestStatusUpdateResult();
+
+        if (!userRepository.existsById(userId)) {
+            throw new ObjectNotFoundException(String.format("User with id=%d not found", userId));
+        }
+        Event event = eventRepository.findById(eventId).orElseThrow(
+                () -> new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId)));
+        if (event.getInitiator().getId() != userId) {
+            throw new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId));
+        }
+        if (event.getParticipantLimit() != 0 || !event.getRequestModeration()) {
+
+            List<Request> requests = requestRepository.findByIdIn(updateRequest.getRequestIds());
+            int limits = event.getParticipantLimit() - event.getConfirmedRequests();
+            int count = 0;
+
+            for (Request request : requests) {
+                if (request.getStatus() != RequestStatus.PENDING) {
+                    throw new RulesViolationException("Request status is not PENDING");
+                }
+
+                while (limits != count) {
+                    request.setStatus(RequestStatus.CONFIRMED);
+                    requestRepository.save(request);
+
+                    ParticipationRequestDto requestDto = new ParticipationRequestDto();
+                    requestDto.setCreated(LocalDateTime.now());
+                    requestDto.setEvent(eventId);
+                    requestDto.setId(request.getId());
+                    requestDto.setRequester(request.getRequester().getId());
+                    requestDto.setStatus(String.valueOf(RequestStatus.CONFIRMED));
+
+                    updateResult.getConfirmedRequests().add(requestDto);
+
+                    count++;
+                    if (limits == count) {
+                        throw new RulesViolationException("Limit of participant");
+                    }
+                }
+                request.setStatus(RequestStatus.REJECTED);
+                requestRepository.save(request);
+
+                ParticipationRequestDto requestDto = new ParticipationRequestDto();
+                requestDto.setCreated(LocalDateTime.now());
+                requestDto.setEvent(eventId);
+                requestDto.setId(request.getId());
+                requestDto.setRequester(request.getRequester().getId());
+                requestDto.setStatus(String.valueOf(RequestStatus.REJECTED));
+
+                updateResult.getRejectedRequests().add(requestDto);
+            }
+        }
+        return updateResult;
     }
 
     @Override

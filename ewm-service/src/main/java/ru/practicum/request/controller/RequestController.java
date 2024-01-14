@@ -3,6 +3,8 @@ package ru.practicum.request.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +14,7 @@ import ru.practicum.request.dto.ParticipationRequestDto;
 import ru.practicum.request.service.RequestService;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,9 +24,22 @@ public class RequestController {
 
     @PostMapping("/users/{userId}/requests")
     @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto addRequest(@PathVariable long userId,
-                                              @NotNull @RequestParam long eventId) {
-        return requestService.addRequest(userId, eventId);
+    public ParticipationRequestDto addRequestPrivate(@PathVariable long userId,
+                                                     @NotNull @RequestParam long eventId) {
+        return requestService.addRequestPrivate(userId, eventId);
     }
 
+    @GetMapping("/users/{userId}/requests")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ParticipationRequestDto> getRequestsPrivate(@PathVariable long userId) {
+        return requestService.getRequestsPrivate(userId);
+    }
+
+    @PatchMapping("/users/{userId}/requests/{requestId}/cancel")
+    @ResponseStatus(HttpStatus.OK)
+    public ParticipationRequestDto cancelRequest(@PathVariable long userId,
+                                                 @PathVariable long requestId) {
+        return requestService.cancelRequest(userId, requestId);
+
+    }
 }

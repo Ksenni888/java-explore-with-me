@@ -20,6 +20,9 @@ import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.dto.UpdateEventAdminRequest;
 import ru.practicum.event.dto.UpdateEventUserRequest;
 import ru.practicum.event.service.EventService;
+import ru.practicum.request.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.request.dto.EventRequestStatusUpdateResult;
+import ru.practicum.request.dto.ParticipationRequestDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -59,6 +62,21 @@ public class EventController {
     public EventFullDto updateEventPrivate(@PathVariable long userId, @PathVariable long eventId,
                                            @Valid @RequestBody UpdateEventUserRequest updateEvent) {
         return eventService.updateEventPrivate(userId, eventId, updateEvent);
+    }
+
+    @GetMapping("/users/{userId}/events/{eventId}/requests")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ParticipationRequestDto> getRequestsUserToEventPrivate(@PathVariable long userId,
+                                                                    @PathVariable long eventId) {
+        return eventService.getRequestsUserToEventPrivate(userId, eventId);
+    }
+
+    @PatchMapping("/users/{userId}/events/{eventId}/requests")
+    @ResponseStatus(HttpStatus.OK)
+    public EventRequestStatusUpdateResult updateEventRequestStatusPrivate(@PathVariable long userId,
+                                                                      @PathVariable long eventId,
+                                                                      @RequestBody EventRequestStatusUpdateRequest updateRequests) {
+     return eventService.updateEventRequestStatusPrivate(userId, eventId, updateRequests);
     }
 
     @GetMapping("/admin/events")

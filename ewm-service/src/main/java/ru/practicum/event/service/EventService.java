@@ -6,6 +6,9 @@ import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.dto.UpdateEventAdminRequest;
 import ru.practicum.event.dto.UpdateEventUserRequest;
+import ru.practicum.request.dto.EventRequestStatusUpdateRequest;
+import ru.practicum.request.dto.EventRequestStatusUpdateResult;
+import ru.practicum.request.dto.ParticipationRequestDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -34,4 +37,8 @@ public interface EventService {
                                         Integer size, HttpServletRequest request);
 
     EventFullDto getEventByIdPublic(long id, HttpServletRequest request);
+
+    List<ParticipationRequestDto> getRequestsUserToEventPrivate(long userId, long eventId);
+
+    EventRequestStatusUpdateResult updateEventRequestStatusPrivate(long userId, long eventId, EventRequestStatusUpdateRequest updateRequests);
 }
