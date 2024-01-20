@@ -41,7 +41,7 @@ public class StatsServiceImpl implements StatsService {
         LocalDateTime endTime = parseTime(decode(end));
         List<StatsDtoOutput> statsDtoOutputs;
 
-        if (start == null || end == null ) {
+        if (start == null || end == null) {
             throw new StatsValidationException("Start and end can't be null");
         }
 

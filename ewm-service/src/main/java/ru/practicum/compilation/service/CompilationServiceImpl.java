@@ -12,7 +12,6 @@ import ru.practicum.compilation.dto.UpdateCompilationRequest;
 import ru.practicum.compilation.mapper.CompilationMapper;
 import ru.practicum.compilation.model.Compilation;
 import ru.practicum.compilation.repository.CompilationRepository;
-import ru.practicum.event.mapper.EventMapper;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.repository.EventRepository;
 import ru.practicum.exeption.ObjectNotFoundException;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
-    private static final Logger log  = LoggerFactory.getLogger(CompilationServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(CompilationServiceImpl.class);
     private final EventRepository eventRepository;
     private final CompilationRepository compilationRepository;
     private final CompilationMapper compilationMapper;
