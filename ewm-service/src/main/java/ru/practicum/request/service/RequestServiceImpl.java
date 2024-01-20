@@ -15,6 +15,7 @@ import ru.practicum.request.mapper.RequestMapper;
 import ru.practicum.request.model.Request;
 import ru.practicum.request.model.RequestStatus;
 import ru.practicum.request.repository.RequestRepository;
+import ru.practicum.user.model.User;
 import ru.practicum.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
@@ -35,46 +36,51 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public ParticipationRequestDto addRequestPrivate(long userId, long eventId) {
+        Request request = new Request();
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId)));
-        if (event.getInitiator().getId() == userId) {
-            throw new RulesViolationException("Event's ownew can't be add");
-        }
-        if (event.getState() != EventState.PUBLISHED) {
-            throw new RulesViolationException("Can't add in not published event");
-        }
-        if (event.getParticipantLimit() - event.getConfirmedRequests() == 0) {
-            throw new RulesViolationException("Participant Limit");
-        }
-        if (requestRepository.findByEventAndRequester(eventId, userId) != null) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ObjectNotFoundException(String.format("User with id=%d was not found", userId)));
+
+        List<Request> requests = requestRepository.findAllByRequesterIdAndEventId(userId, eventId);
+        if (requests.size() != 0) {
             throw new RulesViolationException("Your request added");
         }
-        Request request = new Request();
-        if (!event.getRequestModeration()) {
-            request.setStatus(RequestStatus.CONFIRMED);
-            requestRepository.save(request);
-            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-        } else {
-            request.setStatus(RequestStatus.PENDING);
-            requestRepository.save(request);
+
+        if (userId == event.getInitiator().getId()) {
+            throw new RulesViolationException("Event's ownew can't be add");
+        }
+        if (!event.getState().equals(EventState.PUBLISHED)) {
+            throw new RulesViolationException("Can't add in not published event");
+        }
+        if (event.getParticipantLimit() != 0 && event.getParticipantLimit().equals(event.getConfirmedRequests())) { // event.getParticipantLimit() - event.getConfirmedRequests() == 0) {
+            throw new RulesViolationException("Participant Limit");
         }
 
-        request.setCreated(LocalDateTime.now());
-        request.setRequester(event.getInitiator());
+        request.setRequester(user);
         request.setEvent(event);
+        request.setStatus(RequestStatus.PENDING);
+        request.setCreated(LocalDateTime.now());
+
+        if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
+            request.setStatus(RequestStatus.CONFIRMED);
+            event.setConfirmedRequests(event.getConfirmedRequests() + 1);
+            eventRepository.save(event);
+        }
 
         log.info("Add request by user");
         return requestMapper.toDto(requestRepository.save(request));
     }
+
 
     @Override
     public List<ParticipationRequestDto> getRequestsPrivate(long userId) {
         if (!userRepository.existsById(userId)) {
             throw new ObjectNotFoundException(String.format("User with id=%d not found", userId));
         }
-        log.info("Get requests by user event");
-        return requestRepository.findAllByRequester(userId).stream()
-                .map(x -> requestMapper.toDto(x)).collect(Collectors.toList());
+        log.info("Get user requests to event");
+        return requestRepository.findAllByRequesterId(userId).stream()
+                .map(requestMapper::toDto).collect(Collectors.toList());
     }
 
     @Override
@@ -86,7 +92,7 @@ public class RequestServiceImpl implements RequestService {
         Request request = requestRepository.findById(requestId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("Request with id=%d not found", requestId)));
         request.setStatus(RequestStatus.CANCELED);
-        requestRepository.save(request);
+        request = requestRepository.save(request);
         log.info("Canceled request");
         return requestMapper.toDto(request);
     }

@@ -21,22 +21,23 @@ public class EventMapper {
     private final CategoryMapper categoryMapper;
     private final UserMapper userMapper;
 
-    public Event toEvent(NewEventDto newEventDto, Category category, Integer confirmedRequests, LocalDateTime createdOn,
-                         long id, User user, LocalDateTime publishedOn) {
+    public Event toEvent(NewEventDto newEventDto, Category category, User user, LocalDateTime publishedOn) {
+
+        //Добавление нового события без paid, participantLimit, requestModeration
         Event event = new Event();
         event.setAnnotation(newEventDto.getAnnotation());
         event.setCategory(category);
-        event.setConfirmedRequests(confirmedRequests);
-        event.setCreatedOn(createdOn);
+        event.setConfirmedRequests(0);
+        event.setCreatedOn(LocalDateTime.now());
         event.setDescription(newEventDto.getDescription());
         event.setEventDate(newEventDto.getEventDate());
         event.setInitiator(user);
         event.setLon(newEventDto.getLocation().getLon());
         event.setLat(newEventDto.getLocation().getLat());
-        event.setPaid(newEventDto.getPaid());
-        event.setParticipantLimit(newEventDto.getParticipantLimit());
+        event.setPaid(newEventDto.getPaid() == null ? false : newEventDto.getPaid());
+        event.setParticipantLimit(newEventDto.getParticipantLimit() == null ? 0 : newEventDto.getParticipantLimit());
         event.setPublishedOn(publishedOn);
-        event.setRequestModeration(newEventDto.getRequestModeration());
+        event.setRequestModeration(newEventDto.getRequestModeration() == null ? true : newEventDto.getRequestModeration());
         event.setState(EventState.PENDING);
         event.setTitle(newEventDto.getTitle());
         return event;

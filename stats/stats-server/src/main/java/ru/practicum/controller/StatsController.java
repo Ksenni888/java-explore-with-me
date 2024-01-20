@@ -14,7 +14,7 @@ import ru.practicum.StatsDtoOutput;
 import ru.practicum.service.StatsService;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -35,10 +35,10 @@ public class StatsController {
     @GetMapping("/stats")
     @ResponseStatus(HttpStatus.OK)
     public List<StatsDtoOutput> getStats(
-            @NotEmpty @RequestParam String start,
-            @NotEmpty @RequestParam String end,
+            @RequestParam String start,
+            @RequestParam String end,
             @RequestParam(required = false) List<String> uris,
-            @RequestParam(defaultValue = "false") Boolean unique) {
+            @RequestParam(required = false, defaultValue = "false") Boolean unique) {
         return statsService.getStats(encodeValue(start), encodeValue(end), uris, unique);
     }
 

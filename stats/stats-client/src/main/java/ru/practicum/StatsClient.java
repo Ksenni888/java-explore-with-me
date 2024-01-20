@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class StatsClient {
@@ -18,8 +20,8 @@ public class StatsClient {
         return response.getBody();
     }
 
-    public Integer getStats() {
-        ResponseEntity<Integer> response = restTemplate.getForEntity(uri + "/stats", Integer.class);
+    public StatsDtoOutput getStats(String start, String end, List<String> uris, Boolean unique) {
+        ResponseEntity<StatsDtoOutput> response = restTemplate.getForEntity(uri + "/stats", StatsDtoOutput.class);
         return response.getBody();
     }
 }

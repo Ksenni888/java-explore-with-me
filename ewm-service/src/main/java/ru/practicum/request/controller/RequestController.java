@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.request.dto.ParticipationRequestDto;
 import ru.practicum.request.service.RequestService;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -25,7 +24,7 @@ public class RequestController {
     @PostMapping("/users/{userId}/requests")
     @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto addRequestPrivate(@PathVariable long userId,
-                                                     @NotNull @RequestParam long eventId) {
+                                                     @RequestParam long eventId) {
         return requestService.addRequestPrivate(userId, eventId);
     }
 

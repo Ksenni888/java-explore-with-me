@@ -6,11 +6,12 @@ import ru.practicum.request.model.Request;
 import java.util.List;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
-    Request findByEventAndRequester(long eventId, long userId);
 
-    List<Request> findAllByRequester(long userId);
+    List<Request> findAllByRequesterIdAndEventId(long eventId, long userId);
 
-    List<Request> findAllByEvent(long eventId);
+    List<Request> findAllByRequesterId(long userId);
+
+    List<Request> findAllByEventId(long eventId);
 
     List<Request> findByIdIn(List<Long> ids);
 }

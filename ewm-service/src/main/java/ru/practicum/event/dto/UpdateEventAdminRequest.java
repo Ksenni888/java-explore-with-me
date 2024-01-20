@@ -5,14 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 import ru.practicum.event.model.Location;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 public class UpdateEventAdminRequest {
+    @Size(min = 20, max = 2000)
     private String annotation;
+   // @Positive
     private long category;
     @Size(min = 20, max = 7000)
     private String description;
@@ -22,7 +23,7 @@ public class UpdateEventAdminRequest {
     private Boolean paid;
     private Integer participantLimit;
     private Boolean requestModeration;
-    @NotNull
+    //@NotNull
     private String stateAction;
     @Size(min = 3, max = 120)
     private String title;

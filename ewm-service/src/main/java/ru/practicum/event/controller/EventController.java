@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.StatsClient;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
@@ -35,6 +36,8 @@ import java.util.List;
 @Validated
 public class EventController {
     private final EventService eventService;
+    private final StatsClient client;
+
 
     @PostMapping("/users/{userId}/events")
     @ResponseStatus(HttpStatus.CREATED)
@@ -52,8 +55,8 @@ public class EventController {
 
     @GetMapping("/users/{userId}/events/{eventId}")
     @ResponseStatus(HttpStatus.OK)
-    public EventFullDto getEventByIdPrivate(@PathVariable @Min(1) long userId,
-                                            @PathVariable @Min(1) long eventId) {
+    public EventFullDto getEventByIdPrivate(@PathVariable long userId,
+                                            @PathVariable long eventId) {
         return eventService.getEventByIdPrivate(userId, eventId);
     }
 
@@ -75,7 +78,7 @@ public class EventController {
     @ResponseStatus(HttpStatus.OK)
     public EventRequestStatusUpdateResult updateEventRequestStatusPrivate(@PathVariable long userId,
                                                                       @PathVariable long eventId,
-                                                                      @RequestBody EventRequestStatusUpdateRequest updateRequests) {
+                                                                      @Valid @RequestBody EventRequestStatusUpdateRequest updateRequests) {
      return eventService.updateEventRequestStatusPrivate(userId, eventId, updateRequests);
     }
 

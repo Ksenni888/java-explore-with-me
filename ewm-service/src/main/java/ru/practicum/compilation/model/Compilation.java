@@ -22,6 +22,7 @@ import java.util.List;
 public class Compilation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "compilation_id")
     private long id;
     @ManyToMany
     @JoinTable(name = "compilation_event",
