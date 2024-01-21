@@ -16,11 +16,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class StatsDto {
     @NotEmpty
+    private String ip;
+    @NotEmpty
     private String app;
     @NotEmpty
     private String uri;
-    @NotEmpty
-    private String ip;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @NotNull
     private LocalDateTime timestamp;

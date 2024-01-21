@@ -40,6 +40,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Predicate;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -434,17 +435,19 @@ public class EventServiceImpl implements EventService {
         statsDto.setApp("ewm-main-service");
         statsDto.setTimestamp(LocalDateTime.now());
         client.saveStats(statsDto);
-//        StatsDto statisticInDto = new StatsDto("ewm-service", request.getRequestURI(), request.getRemoteAddr(),
-//                LocalDateTime.now());
-//        statisticClient.postHit(statisticInDto);
-        Event event = eventRepository.findById(id).orElseThrow(
-                () -> new ObjectNotFoundException(String.format("Event with id=%d was not found", id)));
 
-        if (event.getState() != EventState.PUBLISHED) {
-            throw new ObjectNotFoundException(String.format("Event with id=%d was not found", id));
-        }
-        //    Map<Long, Long> views = eventStatService.getEventsViews(List.of(id));
-        return eventMapper.toFull(event, 0L);
+        Event event = eventRepository.findByIdAndState(id, EventState.PUBLISHED)
+                .orElseThrow(() -> new ObjectNotFoundException(String.format("Event with id=%d was not found", id)));
+
+        List<String> uris = new ArrayList<>();
+        uris.add(request.getRequestURI());
+
+        Long view = client.getStats(
+                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                uris,
+                true).get(0).getHits();
+
+        return eventMapper.toFull(event, view);
     }
-
 }
