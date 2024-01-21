@@ -60,7 +60,7 @@ public class EventMapper {
         eventFullDto.setRequestModeration(event.getRequestModeration());
         eventFullDto.setState(event.getState().toString());
         eventFullDto.setTitle(event.getTitle());
-        eventFullDto.setViews(views);
+        eventFullDto.setViews(views != null ? views : 0);
         return eventFullDto;
     }
 

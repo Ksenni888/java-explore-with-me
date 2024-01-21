@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.StatsClient;
 import ru.practicum.StatsDto;
+import ru.practicum.StatsDtoOutput;
 import ru.practicum.category.model.Category;
 import ru.practicum.category.repository.CategoryRepository;
 import ru.practicum.event.dto.EventFullDto;
@@ -89,8 +90,23 @@ public class EventServiceImpl implements EventService {
 //        if (event.getInitiator().getId() != userId) {
 //            throw new ObjectNotFoundException(String.format("Event with id=%d added another user", eventId));
 //        }
+
+        Event event = eventRepository.findByInitiatorIdAndId(userId, eventId);
+        List<String> uris = new ArrayList<>();
+        uris.add("/events/" + event.getId());
+        System.out.println("****************************primer************" + "/events/" + event.getId());
+        List<StatsDtoOutput> output = client.getStats(
+                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                uris,
+                false);
+        Long view = 0L;
+        if (!output.isEmpty()) {
+            view = output.get(0).getHits();
+        }
+
         log.info("Get information about event for owner");
-        return eventMapper.toFull(eventRepository.findByInitiatorIdAndId(userId, eventId), 0L);
+        return eventMapper.toFull(eventRepository.findByInitiatorIdAndId(userId, eventId), view);
     }
 
     @Override
@@ -441,7 +457,7 @@ public class EventServiceImpl implements EventService {
 
         List<String> uris = new ArrayList<>();
         uris.add(request.getRequestURI());
-
+        System.out.println("**************************************************************" + request.getRequestURI());
         Long view = client.getStats(
                 LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
