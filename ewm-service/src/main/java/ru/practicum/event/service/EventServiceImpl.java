@@ -100,13 +100,13 @@ public class EventServiceImpl implements EventService {
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                 uris,
                 false);
-        Long view = 0L;
+        long view = 0L;
         if (!output.isEmpty()) {
             view = output.get(0).getHits();
         }
 
         log.info("Get information about event for owner");
-        return eventMapper.toFull(eventRepository.findByInitiatorIdAndId(userId, eventId), view);
+        return eventMapper.toFull(event, view);
     }
 
     @Override
