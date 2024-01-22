@@ -36,10 +36,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteCategory(long catId) {
-        if (!categoryRepository.existsById(catId)) {
-            throw new ObjectNotFoundException(
-                    String.format("Category with id=%d was not found", catId));
-        }
+        checkCategory(catId);
+//        if (!categoryRepository.existsById(catId)) {
+//            throw new ObjectNotFoundException(
+//                    String.format("Category with id=%d was not found", catId));
+//        }
         if (eventRepository.findAllByCategoryId(catId) != null) {
             throw new RulesViolationException(
                     String.format("Category with id=%d can't remove, because have events", catId));
@@ -51,9 +52,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryDto updateCategory(long catId, CategoryDto categoryDto) {
-        Category category = categoryRepository.findById(catId).orElseThrow(
-                () -> new ObjectNotFoundException(
-                        String.format("Category with id=%d was not found", catId)));
+        Category category = checkCategory(catId);
+//                categoryRepository.findById(catId).orElseThrow(
+//                () -> new ObjectNotFoundException(
+//                        String.format("Category with id=%d was not found", catId)));
         category.setName(categoryDto.getName());
         log.info("Update category");
         return categoryMapper.toDto(categoryRepository.save(category));
@@ -70,10 +72,17 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto getCategory(long catId) {
-        Category category = categoryRepository.findById(catId).orElseThrow(
-                () -> new ObjectNotFoundException(String.format("Category with id=%d was not found", catId))
-        );
+        Category category = checkCategory(catId);
+//                categoryRepository.findById(catId).orElseThrow(
+//                () -> new ObjectNotFoundException(String.format("Category with id=%d was not found", catId))
+//        );
         log.info("Find category by id");
         return categoryMapper.toDto(category);
+    }
+
+    public Category checkCategory(long id) {
+        return categoryRepository.findById(id).orElseThrow(
+                () -> new ObjectNotFoundException(
+                        String.format("Category with id=%d was not found", id)));
     }
 }

@@ -39,14 +39,11 @@ public class RequestServiceImpl implements RequestService {
         Request request = new Request();
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId)));
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new ObjectNotFoundException(String.format("User with id=%d was not found", userId)));
-
+        User user = checkUser(userId);
         List<Request> requests = requestRepository.findAllByRequesterIdAndEventId(userId, eventId);
         if (requests.size() != 0) {
             throw new RulesViolationException("Your request added");
         }
-
         if (userId == event.getInitiator().getId()) {
             throw new RulesViolationException("Event's ownew can't be add");
         }
@@ -67,16 +64,13 @@ public class RequestServiceImpl implements RequestService {
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
             eventRepository.save(event);
         }
-
         log.info("Add request by user");
         return requestMapper.toDto(requestRepository.save(request));
     }
 
     @Override
     public List<ParticipationRequestDto> getRequestsPrivate(long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new ObjectNotFoundException(String.format("User with id=%d not found", userId));
-        }
+        checkUser(userId);
         log.info("Get user requests to event");
         return requestRepository.findAllByRequesterId(userId).stream()
                 .map(requestMapper::toDto).collect(Collectors.toList());
@@ -85,14 +79,17 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public ParticipationRequestDto cancelRequest(long userId, long requestId) {
-        if (!userRepository.existsById(userId)) {
-            throw new ObjectNotFoundException(String.format("User with id=%d not found", userId));
-        }
+        checkUser(userId);
         Request request = requestRepository.findById(requestId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("Request with id=%d not found", requestId)));
         request.setStatus(RequestStatus.CANCELED);
         request = requestRepository.save(request);
         log.info("Canceled request");
         return requestMapper.toDto(request);
+    }
+
+    public User checkUser(long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new ObjectNotFoundException(String.format("User with id=%d not found", id)));
     }
 }
