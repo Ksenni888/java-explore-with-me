@@ -14,7 +14,7 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Stats</name>
+    <name>stats</name>
 
     <modules>
         <module>stats-server</module>
