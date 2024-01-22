@@ -15,5 +15,4 @@ public class CompilationDto {
     private Boolean pinned;
     @NotBlank
     private String title;
-
 }

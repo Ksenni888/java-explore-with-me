@@ -21,11 +21,4 @@ public class CategoryMapper {
         categoryDto.setName(category.getName());
         return categoryDto;
     }
-
-//    public CategoryDtoOut toDtoOut(Category category) {
-//        CategoryDtoOut categoryDtoOut = new CategoryDtoOut();
-//        categoryDtoOut.setId(category.getId());
-//        categoryDtoOut.setName(category.getName());
-//        return categoryDtoOut;
-//    }
 }

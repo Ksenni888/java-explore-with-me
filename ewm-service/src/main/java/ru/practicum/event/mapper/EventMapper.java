@@ -22,8 +22,6 @@ public class EventMapper {
     private final UserMapper userMapper;
 
     public Event toEvent(NewEventDto newEventDto, Category category, User user, LocalDateTime publishedOn) {
-
-        //Добавление нового события без paid, participantLimit, requestModeration
         Event event = new Event();
         event.setAnnotation(newEventDto.getAnnotation());
         event.setCategory(category);

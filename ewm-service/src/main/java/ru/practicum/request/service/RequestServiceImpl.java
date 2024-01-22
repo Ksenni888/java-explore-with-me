@@ -53,7 +53,7 @@ public class RequestServiceImpl implements RequestService {
         if (!event.getState().equals(EventState.PUBLISHED)) {
             throw new RulesViolationException("Can't add in not published event");
         }
-        if (event.getParticipantLimit() != 0 && event.getParticipantLimit().equals(event.getConfirmedRequests())) { // event.getParticipantLimit() - event.getConfirmedRequests() == 0) {
+        if (event.getParticipantLimit() != 0 && event.getParticipantLimit().equals(event.getConfirmedRequests())) {
             throw new RulesViolationException("Participant Limit");
         }
 
@@ -71,7 +71,6 @@ public class RequestServiceImpl implements RequestService {
         log.info("Add request by user");
         return requestMapper.toDto(requestRepository.save(request));
     }
-
 
     @Override
     public List<ParticipationRequestDto> getRequestsPrivate(long userId) {

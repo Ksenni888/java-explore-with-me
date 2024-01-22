@@ -11,6 +11,8 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
+import static ru.practicum.constant.Constants.DATA_FORMAT;
+
 @Getter
 @Setter
 public class NewEventDto {
@@ -24,8 +26,8 @@ public class NewEventDto {
     @Size(min = 20, max = 7000)
     private String description;
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime eventDate; //Дата и время указываются в формате "yyyy-MM-dd HH:mm:ss"
+    @JsonFormat(pattern = DATA_FORMAT)
+    private LocalDateTime eventDate;
     @NotNull
     private Location location;
     private Boolean paid;

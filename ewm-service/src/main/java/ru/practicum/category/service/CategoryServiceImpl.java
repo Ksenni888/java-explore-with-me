@@ -41,7 +41,8 @@ public class CategoryServiceImpl implements CategoryService {
                     String.format("Category with id=%d was not found", catId));
         }
         if (eventRepository.findAllByCategoryId(catId) != null) {
-            throw new RulesViolationException(String.format("Category with id=%d can't remove, because have events", catId));
+            throw new RulesViolationException(
+                    String.format("Category with id=%d can't remove, because have events", catId));
         }
         categoryRepository.deleteById(catId);
         log.info("Category was deleted");
@@ -57,7 +58,6 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("Update category");
         return categoryMapper.toDto(categoryRepository.save(category));
     }
-
 
     @Override
     public List<CategoryDto> getCategories(Pageable pageable) {

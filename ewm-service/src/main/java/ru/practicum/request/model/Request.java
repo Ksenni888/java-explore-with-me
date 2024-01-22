@@ -18,6 +18,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
+import static ru.practicum.constant.Constants.DATA_FORMAT;
+
 @Getter
 @Setter
 @Entity
@@ -27,7 +29,7 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
     private long id;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATA_FORMAT)
     @Column(name = "created")
     private LocalDateTime created;
     @ManyToOne

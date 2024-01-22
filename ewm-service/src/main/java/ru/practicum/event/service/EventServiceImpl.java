@@ -47,6 +47,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.practicum.constant.Constants.DATA_FORMAT;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -64,10 +66,13 @@ public class EventServiceImpl implements EventService {
     @Transactional
     public EventFullDto addEventPrivate(long userId, NewEventDto newEventDto) {
         if (newEventDto.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new InvalidRequestException("Field: eventDate. " + "Error: Date must be after than now. Value:" + newEventDto.getEventDate());
+            throw new InvalidRequestException("Field: eventDate. " + "Error: Date must be after than now. Value:"
+                    + newEventDto.getEventDate());
         }
-        User user = userRepository.findById(userId).orElseThrow(() -> new ObjectNotFoundException(String.format("User with id=%d not found", userId)));
-        Category category = categoryRepository.findById(newEventDto.getCategory()).orElseThrow(() -> new ObjectNotFoundException(String.format("Category with id=%d not found", newEventDto.getCategory())));
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ObjectNotFoundException(String.format("User with id=%d not found", userId)));
+        Category category = categoryRepository.findById(newEventDto.getCategory()).orElseThrow(
+                () -> new ObjectNotFoundException(String.format("Category with id=%d not found", newEventDto.getCategory())));
         Event event = eventMapper.toEvent(newEventDto, category, user, null);
         event = eventRepository.save(event);
 
@@ -85,19 +90,13 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto getEventByIdPrivate(long userId, long eventId) {
-//        Event event = eventRepository.findById(eventId).orElseThrow(
-//                () -> new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId)));
-//        if (event.getInitiator().getId() != userId) {
-//            throw new ObjectNotFoundException(String.format("Event with id=%d added another user", eventId));
-//        }
-
         Event event = eventRepository.findByInitiatorIdAndId(userId, eventId);
+
         List<String> uris = new ArrayList<>();
         uris.add("/events/" + event.getId());
-        System.out.println("****************************primer************" + "/events/" + event.getId());
         List<StatsDtoOutput> output = client.getStats(
-                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
                 uris,
                 false);
         long view = 0L;
@@ -122,14 +121,16 @@ public class EventServiceImpl implements EventService {
         }
         if (updateEvent.getEventDate() != null) {
             if (updateEvent.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-                throw new InvalidRequestException("Field: eventDate. " + "Error: Date must be after than now. Value:" + event.getEventDate());
+                throw new InvalidRequestException("Field: eventDate. " + "Error: Date must be after than now. Value:"
+                        + event.getEventDate());
             } else {
                 event.setEventDate(updateEvent.getEventDate());
             }
         }
         if (updateEvent.getCategory() != 0) {
             long categoryId = updateEvent.getCategory();
-            Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ObjectNotFoundException(String.format("Category with id=%d was not found", categoryId)));
+            Category category = categoryRepository.findById(categoryId).orElseThrow(
+                    () -> new ObjectNotFoundException(String.format("Category with id=%d was not found", categoryId)));
             event.setCategory(category);
         }
         if (updateEvent.getAnnotation() != null) {
@@ -254,7 +255,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventFullDto> getEventsAdmin(List<Long> users, List<String> states, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable) {
+    public List<EventFullDto> getEventsAdmin(List<Long> users, List<String> states, List<Long> categories,
+                                             LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable) {
 
         Specification<Event> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -266,17 +268,6 @@ public class EventServiceImpl implements EventService {
                 predicates.add(usersInClause);
             }
             if (states != null) {
-//                List<String> allState = new ArrayList<>();
-//                for (EventState state : EventState.values()) {
-//                    allState.add(String.valueOf(state));
-//                }
-//                CriteriaBuilder.In<String> statesInClause = criteriaBuilder.in(root.get("state"));
-//                for (String state : states) {
-//                    if (!allState.contains(state)) {
-//                        throw new InvalidRequestException("states must be: PENDING or PUBLISHED or CANCELED");
-//                    }
-//                    statesInClause.value(state);
-//                }
                 EventState eventState;
                 List<EventState> eventStates = new ArrayList<>();
                 try {
@@ -319,16 +310,19 @@ public class EventServiceImpl implements EventService {
     public EventFullDto updateEventAdmin(long eventId, UpdateEventAdminRequest updateEventAdmin) {
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId)));
+
         if (updateEventAdmin.getStateAction() != null) {
             if (updateEventAdmin.getStateAction().equals("PUBLISH_EVENT")) {
                 if (!String.valueOf(event.getState()).equals("PENDING")) {
-                    throw new RulesViolationException(String.format("Event have state=%s but must have state PENDING", event.getState()));
+                    throw new RulesViolationException(
+                            String.format("Event have state=%s but must have state PENDING", event.getState()));
                 }
                 event.setState(EventState.PUBLISHED);
                 event.setPublishedOn(LocalDateTime.now());
             } else if (updateEventAdmin.getStateAction().equals("REJECT_EVENT")) {
                 if (String.valueOf(event.getState()).equals("PUBLISHED")) {
-                    throw new RulesViolationException(String.format("Event have state=%s adn can't be REJECT", event.getState()));
+                    throw new RulesViolationException(
+                            String.format("Event have state=%s adn can't be REJECT", event.getState()));
                 }
                 event.setState(EventState.CANCELED);
             } else {
@@ -340,7 +334,9 @@ public class EventServiceImpl implements EventService {
             event.setAnnotation(updateEventAdmin.getAnnotation());
         }
         if (updateEventAdmin.getCategory() != 0) {
-            Category category = categoryRepository.findById(updateEventAdmin.getCategory()).orElseThrow(() -> new ObjectNotFoundException(String.format("Category with id=%d was not found", updateEventAdmin.getCategory())));
+            Category category = categoryRepository.findById(updateEventAdmin.getCategory()).orElseThrow(
+                    () -> new ObjectNotFoundException(
+                            String.format("Category with id=%d was not found", updateEventAdmin.getCategory())));
             event.setCategory(category);
         }
         if (updateEventAdmin.getDescription() != null) {
@@ -371,8 +367,6 @@ public class EventServiceImpl implements EventService {
         }
         event.setId(eventId);
         eventRepository.save(event);
-//        Map <Long, Long> views = eventStatService.getEventsViews(List.of(eventId));
-//        return eventMapper.toFull(event, views.get(event.getId()));
         return eventMapper.toFull(event, 0L);
     }
 
@@ -384,14 +378,15 @@ public class EventServiceImpl implements EventService {
         statsDto.setApp("ewm-main-service");
         statsDto.setTimestamp(LocalDateTime.now());
         client.saveStats(statsDto);
-//        StatsDto statisticInDto = new StatsDto("ewm-service", request.getRequestURI(), request.getRemoteAddr(),
-//                LocalDateTime.now());
-//        statisticClient.postHit(statisticInDto);
 
         Specification<Event> specification = (((root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
             if (text != null) {
-                predicates.add(criteriaBuilder.or(criteriaBuilder.like(criteriaBuilder.lower(root.get("annotation")), "%" + text.toLowerCase() + "%"), criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" + text.toLowerCase() + "%")));
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(
+                                criteriaBuilder.lower(root.get("annotation")), "%" + text.toLowerCase() + "%"),
+                        criteriaBuilder.like(
+                                criteriaBuilder.lower(root.get("description")), "%" + text.toLowerCase() + "%")));
             }
             if (categories != null) {
                 CriteriaBuilder.In<Long> categoriesInClause = criteriaBuilder.in(root.get("category"));
@@ -425,19 +420,22 @@ public class EventServiceImpl implements EventService {
         if (sort == null) {
             Pageable pageable = PageRequest.of(from / size, size, Sort.by("id"));
             List<Event> allEvents = eventRepository.findAll(specification, pageable).getContent();
-//            Map<Long, Long> eventViews = eventStatService.getEventsViews(allEvents.stream().map(Event::getId).collect(Collectors.toList()));
-            return allEvents.stream().map(x -> eventMapper.toShort(x, 0L))//client.getStats(String.valueOf(rangeStart), String.valueOf(rangeEnd), Collections.singletonList("/event/" + x.getId()), false).getHits()))
+            return allEvents.stream()
+                    .map(x -> eventMapper.toShort(x, 0L))
                     .collect(Collectors.toList());
         } else if (sort.equals(String.valueOf(EventSort.EVENT_DATE))) {
             Pageable pageable = PageRequest.of(from / size, size, Sort.by("eventDate"));
             List<Event> allEvents = eventRepository.findAll(specification, pageable).getContent();
-            //  Map<Long, Long> eventViews = eventStatService.getEventsViews(allEvents.stream().map(Event::getId).collect(Collectors.toList()));
-            return allEvents.stream().map(x -> eventMapper.toShort(x, 0L)).collect(Collectors.toList());
+            return allEvents.stream()
+                    .map(x -> eventMapper.toShort(x, 0L))
+                    .collect(Collectors.toList());
         } else if (sort.equals(String.valueOf(EventSort.VIEWS))) {
             Pageable pageable = PageRequest.of(from / size, size, Sort.unsorted());
             List<Event> allEvents = eventRepository.findAll(specification, pageable).getContent();
-            //  Map<Long, Long> eventViews = eventStatService.getEventsViews(allEvents.stream().map(Event::getId).collect(Collectors.toList()));
-            return allEvents.stream().map(x -> eventMapper.toShort(x, 0L)).sorted(Comparator.comparing(EventShortDto::getViews)).collect(Collectors.toList());
+            return allEvents.stream()
+                    .map(x -> eventMapper.toShort(x, 0L))
+                    .sorted(Comparator.comparing(EventShortDto::getViews))
+                    .collect(Collectors.toList());
         }
 
         throw new InvalidRequestException("Sort cat be EVENT_DATE or VIEWS");
@@ -457,10 +455,10 @@ public class EventServiceImpl implements EventService {
 
         List<String> uris = new ArrayList<>();
         uris.add(request.getRequestURI());
-        System.out.println("**************************************************************" + request.getRequestURI());
+
         Long view = client.getStats(
-                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
                 uris,
                 true).get(0).getHits();
 

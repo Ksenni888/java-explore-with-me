@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
+import static ru.practicum.constant.Constants.DATA_FORMAT;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -15,6 +17,6 @@ import java.time.LocalDateTime;
         private final HttpStatus status;
         private final String reason;
         private final String message;
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonFormat(pattern = DATA_FORMAT)
         private final LocalDateTime timestamp;
     }

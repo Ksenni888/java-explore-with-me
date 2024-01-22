@@ -31,6 +31,8 @@ import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static ru.practicum.constant.Constants.DATA_FORMAT;
+
 @RestController
 @RequiredArgsConstructor
 @Validated
@@ -70,15 +72,15 @@ public class EventController {
     @GetMapping("/users/{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
     public List<ParticipationRequestDto> getRequestsUserToEventPrivate(@PathVariable long userId,
-                                                                    @PathVariable long eventId) {
+                                                                       @PathVariable long eventId) {
         return eventService.getRequestsUserToEventPrivate(userId, eventId);
     }
 
     @PatchMapping("/users/{userId}/events/{eventId}/requests")
     @ResponseStatus(HttpStatus.OK)
     public EventRequestStatusUpdateResult updateEventRequestStatusPrivate(@PathVariable long userId,
-                                                                      @PathVariable long eventId,
-                                                                      @Valid @RequestBody EventRequestStatusUpdateRequest updateRequests) {
+                                                                          @PathVariable long eventId,
+                                                                          @Valid @RequestBody EventRequestStatusUpdateRequest updateRequests) {
      return eventService.updateEventRequestStatusPrivate(userId, eventId, updateRequests);
     }
 
@@ -87,13 +89,12 @@ public class EventController {
     public List<EventFullDto> getEventsAdmin(@RequestParam(required = false) List<Long> users,
                                              @RequestParam(required = false) List<String> states,
                                              @RequestParam(required = false) List<Long> categories,
-                                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-                                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                             @RequestParam(required = false) @DateTimeFormat(pattern = DATA_FORMAT) LocalDateTime rangeStart,
+                                             @RequestParam(required = false) @DateTimeFormat(pattern = DATA_FORMAT) LocalDateTime rangeEnd,
                                              @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
-                                             @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size
-
-    ) {
-        return eventService.getEventsAdmin(users, states, categories, rangeStart, rangeEnd, PageRequest.of(from / size, size, Sort.by("id")));
+                                             @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
+        return eventService.getEventsAdmin(users, states, categories, rangeStart, rangeEnd,
+                PageRequest.of(from / size, size, Sort.by("id")));
     }
 
     @PatchMapping("/admin/events/{eventId}")
@@ -108,17 +109,16 @@ public class EventController {
             @RequestParam(required = false) String text,
             @RequestParam(required = false) List<Long> categories,
             @RequestParam(required = false) Boolean paid,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+            @RequestParam(required = false) @DateTimeFormat(pattern = DATA_FORMAT) LocalDateTime rangeStart,
+            @RequestParam(required = false) @DateTimeFormat(pattern = DATA_FORMAT) LocalDateTime rangeEnd,
             @RequestParam(required = false, defaultValue = "false") Boolean onlyAvailable,
             @RequestParam(required = false) String sort,
             @RequestParam(required = false, defaultValue = "0") Integer from,
             @RequestParam(required = false, defaultValue = "10") Integer size,
-            HttpServletRequest request
-    ) {
+            HttpServletRequest request) {
 
-        return eventService.getEventsPublic(text, categories, paid, rangeStart, rangeEnd,
-                onlyAvailable, sort, from, size, request);
+        return eventService.getEventsPublic(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from,
+                size, request);
     }
 
     @GetMapping("/events/{id}")

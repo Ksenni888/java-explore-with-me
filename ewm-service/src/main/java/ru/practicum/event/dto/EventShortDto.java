@@ -9,6 +9,8 @@ import ru.practicum.user.dto.UserShortDto;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
+import static ru.practicum.constant.Constants.DATA_FORMAT;
+
 @Getter
 @Setter
 public class EventShortDto {
@@ -19,7 +21,7 @@ public class EventShortDto {
     private CategoryDto category;
     private Integer confirmedRequests;
     @NotNull
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = DATA_FORMAT)
     private LocalDateTime eventDate;
     @NotNull
     private UserShortDto initiator;
