@@ -2,14 +2,14 @@ drop table IF EXISTS categories, users, events, requests, compilations, compilat
 
 create TABLE IF NOT EXISTS categories (
 category_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-category_name VARCHAR(50) NOT NULL,
+category_name VARCHAR(50)                          NOT NULL,
 UNIQUE (category_name)
 );
 
 create TABLE IF NOT EXISTS users (
 user_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-user_email VARCHAR(254) NOT NULL,
-user_name VARCHAR(250) NOT NULL,
+user_email VARCHAR(254)                        NOT NULL,
+user_name VARCHAR(250)                         NOT NULL,
 UNIQUE (user_email)
 );
 
@@ -36,25 +36,24 @@ FOREIGN KEY(initiator_id) REFERENCES users(user_id) ON delete CASCADE
 
 create TABLE IF NOT EXISTS requests (
 request_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-created TIMESTAMP                         NOT NULL,
-event_id BIGINT                           NOT NULL,
-requester_id BIGINT                       NOT NULL,
-status VARCHAR(50)                        NOT NULL,
+created TIMESTAMP                                 NOT NULL,
+event_id BIGINT                                   NOT NULL,
+requester_id BIGINT                               NOT NULL,
+status VARCHAR(50)                                NOT NULL,
 FOREIGN KEY(event_id) REFERENCES events(event_id),
-FOREIGN KEY(requester_id) REFERENCES users(user_id));
-
+FOREIGN KEY(requester_id) REFERENCES users(user_id)
+);
 
 create TABLE IF NOT EXISTS compilations (
 compilation_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-pinned BOOLEAN NOT NULL,
-title VARCHAR(50) NOT NULL
-
+pinned BOOLEAN                                        NOT NULL,
+title VARCHAR(50)                                     NOT NULL
 );
 
 create TABLE IF NOT EXISTS compilation_event (
-event_id BIGINT NOT NULL,
-compilation_id BIGINT NOT NULL,
+event_id BIGINT                                        NOT NULL,
+compilation_id BIGINT                                  NOT NULL,
 PRIMARY KEY (compilation_id, event_id),
-FOREIGN KEY(event_id) REFERENCES events(event_id),-- ON delete CASCADE,
-FOREIGN KEY(compilation_id) REFERENCES compilations(compilation_id)-- ON delete CASCADE
+FOREIGN KEY(event_id) REFERENCES events(event_id),
+FOREIGN KEY(compilation_id) REFERENCES compilations(compilation_id)
 );
