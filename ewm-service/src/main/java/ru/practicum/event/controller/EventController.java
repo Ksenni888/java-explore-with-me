@@ -94,7 +94,15 @@ public class EventController {
                                              @RequestParam(required = false) @DateTimeFormat(pattern = DATA_FORMAT) LocalDateTime rangeEnd,
                                              @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
                                              @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
-        EventAdminParam eventAdminParam = new EventAdminParam(users, states, categories, rangeStart, rangeEnd, from, size);
+        EventAdminParam eventAdminParam = new EventAdminParam();
+        eventAdminParam.setUsers(users);
+        eventAdminParam.setStates(states);
+        eventAdminParam.setCategories(categories);
+        eventAdminParam.setRangeStart(rangeStart);
+        eventAdminParam.setRangeEnd(rangeEnd);
+        eventAdminParam.setFrom(from);
+        eventAdminParam.setSize(size);
+
         return eventService.getEventsAdmin(eventAdminParam);
     }
 
@@ -117,8 +125,18 @@ public class EventController {
             @RequestParam(required = false, defaultValue = "0") Integer from,
             @RequestParam(required = false, defaultValue = "10") Integer size,
             HttpServletRequest request) {
-        EventUserParam eventUserParam = new EventUserParam(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from,
-                size);
+
+        EventUserParam eventUserParam = new EventUserParam();
+        eventUserParam.setText(text);
+        eventUserParam.setCategories(categories);
+        eventUserParam.setPaid(paid);
+        eventUserParam.setRangeStart(rangeStart);
+        eventUserParam.setRangeEnd(rangeEnd);
+        eventUserParam.setOnlyAvailable(onlyAvailable);
+        eventUserParam.setSort(sort);
+        eventUserParam.setFrom(from);
+        eventUserParam.setSize(size);
+
         return eventService.getEventsPublic(eventUserParam, request);
     }
 
