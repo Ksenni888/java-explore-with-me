@@ -58,6 +58,6 @@ public class CompilationController {
     @GetMapping("/compilations/{compId}")
     @ResponseStatus(HttpStatus.OK)
     public CompilationDto findCompilationPublic(@PathVariable long compId) {
-       return compilationService.findCompilationPublic(compId);
+        return compilationService.findCompilationPublic(compId);
     }
 }

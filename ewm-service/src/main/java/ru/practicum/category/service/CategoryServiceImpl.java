@@ -35,20 +35,20 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public void deleteCategory(long catId) {
-        checkCategory(catId);
-        if (eventRepository.findAllByCategoryId(catId) != null) {
+    public void deleteCategory(long categoryId) {
+        checkCategory(categoryId);
+        if (eventRepository.findAllByCategoryId(categoryId) != null) {
             throw new RulesViolationException(
-                    String.format("Category with id=%d can't remove, because have events", catId));
+                    String.format("Category with id=%d can't remove, because have events", categoryId));
         }
-        categoryRepository.deleteById(catId);
+        categoryRepository.deleteById(categoryId);
         log.info("Category was deleted");
     }
 
     @Override
     @Transactional
-    public CategoryDto updateCategory(long catId, CategoryDto categoryDto) {
-        Category category = checkCategory(catId);
+    public CategoryDto updateCategory(long categoryId, CategoryDto categoryDto) {
+        Category category = checkCategory(categoryId);
         category.setName(categoryDto.getName());
         log.info("Update category");
         return categoryMapper.toDto(categoryRepository.save(category));
@@ -57,15 +57,15 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryDto> getCategories(Pageable pageable) {
         List<CategoryDto> allCategories = categoryRepository.findAll(pageable).stream()
-                .map(x -> categoryMapper.toDto(x))
+                .map(categoryMapper::toDto)
                 .collect(Collectors.toList());
         log.info("Find all categories with parameters");
         return allCategories;
     }
 
     @Override
-    public CategoryDto getCategory(long catId) {
-        Category category = checkCategory(catId);
+    public CategoryDto getCategory(long categoryId) {
+        Category category = checkCategory(categoryId);
         log.info("Find category by id");
         return categoryMapper.toDto(category);
     }

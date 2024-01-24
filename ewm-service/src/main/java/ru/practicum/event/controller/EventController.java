@@ -2,7 +2,6 @@ package ru.practicum.event.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -15,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.StatsClient;
+import ru.practicum.event.dto.EventAdminParam;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventShortDto;
+import ru.practicum.event.dto.EventUserParam;
 import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.dto.UpdateEventAdminRequest;
 import ru.practicum.event.dto.UpdateEventUserRequest;
@@ -81,7 +82,7 @@ public class EventController {
     public EventRequestStatusUpdateResult updateEventRequestStatusPrivate(@PathVariable long userId,
                                                                           @PathVariable long eventId,
                                                                           @Valid @RequestBody EventRequestStatusUpdateRequest updateRequests) {
-     return eventService.updateEventRequestStatusPrivate(userId, eventId, updateRequests);
+        return eventService.updateEventRequestStatusPrivate(userId, eventId, updateRequests);
     }
 
     @GetMapping("/admin/events")
@@ -93,8 +94,8 @@ public class EventController {
                                              @RequestParam(required = false) @DateTimeFormat(pattern = DATA_FORMAT) LocalDateTime rangeEnd,
                                              @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
                                              @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
-        return eventService.getEventsAdmin(users, states, categories, rangeStart, rangeEnd,
-                PageRequest.of(from / size, size, Sort.by("id")));
+        EventAdminParam eventAdminParam = new EventAdminParam(users, states, categories, rangeStart, rangeEnd, from, size);
+        return eventService.getEventsAdmin(eventAdminParam);
     }
 
     @PatchMapping("/admin/events/{eventId}")
@@ -116,9 +117,9 @@ public class EventController {
             @RequestParam(required = false, defaultValue = "0") Integer from,
             @RequestParam(required = false, defaultValue = "10") Integer size,
             HttpServletRequest request) {
-
-        return eventService.getEventsPublic(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from,
-                size, request);
+        EventUserParam eventUserParam = new EventUserParam(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from,
+                size);
+        return eventService.getEventsPublic(eventUserParam, request);
     }
 
     @GetMapping("/events/{id}")

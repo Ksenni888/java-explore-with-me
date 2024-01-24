@@ -1,19 +1,17 @@
 package ru.practicum.user.mapper;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.user.dto.UserDto;
 import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.user.model.User;
 
 @Component
-@RequiredArgsConstructor
 public class UserMapper {
     public User toUser(UserDto userDto) {
-       User user = new User();
-       user.setName(userDto.getName());
-       user.setEmail(userDto.getEmail());
-       return user;
+        User user = new User();
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        return user;
     }
 
     public UserDto toDto(User user) {

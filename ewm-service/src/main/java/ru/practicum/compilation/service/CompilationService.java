@@ -12,11 +12,11 @@ public interface CompilationService {
 
     CompilationDto addCompilationAdmin(NewCompilationDto newCompilationDto);
 
-    void deleteCompilationAdmin(@PathVariable long compId);
+    void deleteCompilationAdmin(@PathVariable long compilationId);
 
-    CompilationDto updateCompilationAdmin(long compId, UpdateCompilationRequest updateCompilationRequest);
+    CompilationDto updateCompilationAdmin(long compilationId, UpdateCompilationRequest updateCompilationRequest);
 
     List<CompilationDto> findCompilationsPublic(Boolean pinned, Pageable pageable);
 
-    CompilationDto findCompilationPublic(long compId);
+    CompilationDto findCompilationPublic(long compilationId);
 }

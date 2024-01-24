@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 public class CompilationMapper {
     private final EventMapper eventMapper;
 
-    public CompilationDto toDto(Compilation compilation) {
+    public CompilationDto toDto(Compilation compilation, long view) {
         CompilationDto compilationDto = new CompilationDto();
         compilationDto.setId(compilation.getId());
-        compilationDto.setPinned(compilation.getPinned() == null ? false : compilation.getPinned());
+        compilationDto.setPinned(compilation.getPinned() != null && compilation.getPinned());
         compilationDto.setTitle(compilation.getTitle());
         compilationDto.setEvents(compilation.getEvents().stream()
                 .map(x -> eventMapper.toShort(x, 0L))

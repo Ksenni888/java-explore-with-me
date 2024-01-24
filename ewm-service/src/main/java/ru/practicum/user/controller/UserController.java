@@ -34,8 +34,8 @@ public class UserController {
     @GetMapping("/admin/users")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDto> getUsersAdmin(@RequestParam(required = false) List<Long> ids,
-                                  @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
-                                  @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
+                                       @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+                                       @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
         return userService.getUsersAdmin(ids, PageRequest.of(from / size, size));
     }
 

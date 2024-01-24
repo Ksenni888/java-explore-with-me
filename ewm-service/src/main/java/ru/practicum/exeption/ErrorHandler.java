@@ -19,7 +19,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         log.warn("Incorrectly made request.");
-        return new ErrorResponse(HttpStatus.BAD_REQUEST,"Incorrectly made request.", e.getMessage(),
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, "Incorrectly made request.", e.getMessage(),
                 LocalDateTime.now());
     }
 
@@ -27,7 +27,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleDataIntegrityViolationException(final DataIntegrityViolationException e) {
         log.warn("Integrity constraint has been violated.");
-        return new ErrorResponse(HttpStatus.CONFLICT,"Integrity constraint has been violated.", e.getMessage(),
+        return new ErrorResponse(HttpStatus.CONFLICT, "Integrity constraint has been violated.", e.getMessage(),
                 LocalDateTime.now());
     }
 

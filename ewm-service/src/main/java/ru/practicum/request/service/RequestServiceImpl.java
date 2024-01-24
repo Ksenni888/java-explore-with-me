@@ -41,7 +41,7 @@ public class RequestServiceImpl implements RequestService {
                 () -> new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId)));
         User user = checkUser(userId);
         List<Request> requests = requestRepository.findAllByRequesterIdAndEventId(userId, eventId);
-        if (requests.size() != 0) {
+        if (!requests.isEmpty()) {
             throw new RulesViolationException("Your request added");
         }
         if (userId == event.getInitiator().getId()) {

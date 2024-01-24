@@ -34,11 +34,11 @@ public class UserServiceImp implements UserService {
         log.info("Get list of users by ids");
         if (ids == null || ids.isEmpty()) {
             return userRepository.findAll(pageable).stream()
-                    .map(x -> userMapper.toDto(x))
+                    .map(userMapper::toDto)
                     .collect(Collectors.toList());
         }
         return userRepository.findByIdIn(ids, pageable).stream()
-                .map(x -> userMapper.toDto(x))
+                .map(userMapper::toDto)
                 .collect(Collectors.toList());
     }
 

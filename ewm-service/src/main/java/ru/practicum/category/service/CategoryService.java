@@ -9,11 +9,11 @@ public interface CategoryService {
 
     CategoryDto addCategory(CategoryDto categoryDto);
 
-    void deleteCategory(long catId);
+    void deleteCategory(long categoryId);
 
-    CategoryDto updateCategory(long catId, CategoryDto categoryDto);
+    CategoryDto updateCategory(long categoryId, CategoryDto categoryDto);
 
     List<CategoryDto> getCategories(Pageable pageable);
 
-    CategoryDto getCategory(long catId);
+    CategoryDto getCategory(long categoryId);
 }

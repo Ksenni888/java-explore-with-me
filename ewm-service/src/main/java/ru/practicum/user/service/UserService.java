@@ -4,7 +4,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.PathVariable;
 import ru.practicum.user.dto.UserDto;
 
-
 import java.util.List;
 
 public interface UserService {
