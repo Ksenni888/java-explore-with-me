@@ -71,8 +71,8 @@ public class EventServiceImpl implements EventService {
             throw new InvalidRequestException("Field: eventDate. " + "Error: Date must be after than now. Value:"
                     + newEventDto.getEventDate());
         }
-        User user = checkUser(userId);
-        Category category = checkCategory(newEventDto.getCategory());
+        User user = getUserOrThrow(userId);
+        Category category = getCategoryOrThrow(newEventDto.getCategory());
         Event event = eventMapper.toEvent(newEventDto, category, user, null);
         event = eventRepository.save(event);
 
@@ -104,7 +104,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventFullDto updateEventPrivate(long userId, long eventId, UpdateEventUserRequest updateEvent) {
-        checkEvent(eventId);
+        getEventOrThrow(eventId);
         Event event = eventRepository.findByInitiatorIdAndId(userId, eventId);
 
         if (event.getState().equals(EventState.PUBLISHED)) {
@@ -120,7 +120,7 @@ public class EventServiceImpl implements EventService {
         }
         if (updateEvent.getCategory() != 0) {
             long categoryId = updateEvent.getCategory();
-            Category category = checkCategory(categoryId);
+            Category category = getCategoryOrThrow(categoryId);
             event.setCategory(category);
         }
         if (updateEvent.getAnnotation() != null) {
@@ -164,8 +164,8 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<ParticipationRequestDto> getRequestsUserToEventPrivate(long userId, long eventId) {
-        checkEvent(eventId);
-        checkUser(userId);
+        getEventOrThrow(eventId);
+        getUserOrThrow(userId);
         log.info("All requests to event");
         return requestRepository.findAllByEventId(eventId).stream()
                 .map(requestMapper::toDto)
@@ -181,8 +181,8 @@ public class EventServiceImpl implements EventService {
         List<Request> rejectedRequests = new ArrayList<>();
         int countRequests = updateRequest.getRequestIds().size();
         List<Request> requests = requestRepository.findByIdIn(updateRequest.getRequestIds());
-        checkUser(userId);
-        Event event = checkEvent(eventId);
+        getUserOrThrow(userId);
+        Event event = getEventOrThrow(eventId);
 
         if (event.getInitiator().getId() != userId) {
             throw new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId));
@@ -296,7 +296,7 @@ public class EventServiceImpl implements EventService {
     @Override
     @Transactional
     public EventFullDto updateEventAdmin(long eventId, UpdateEventAdminRequest updateEventAdmin) {
-        Event event = checkEvent(eventId);
+        Event event = getEventOrThrow(eventId);
 
         if (updateEventAdmin.getStateAction() != null) {
             if (updateEventAdmin.getStateAction().equals("PUBLISH_EVENT")) {
@@ -321,7 +321,7 @@ public class EventServiceImpl implements EventService {
             event.setAnnotation(updateEventAdmin.getAnnotation());
         }
         if (updateEventAdmin.getCategory() != 0) {
-            Category category = checkCategory(updateEventAdmin.getCategory());
+            Category category = getCategoryOrThrow(updateEventAdmin.getCategory());
             event.setCategory(category);
         }
         if (updateEventAdmin.getDescription() != null) {
@@ -468,18 +468,18 @@ public class EventServiceImpl implements EventService {
         return view;
     }
 
-    public Category checkCategory(long categoryId) {
+    private Category getCategoryOrThrow(long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(
                 () -> new ObjectNotFoundException(
                         String.format("Category with id=%d was not found", categoryId)));
     }
 
-    public Event checkEvent(long eventId) {
+    private Event getEventOrThrow(long eventId) {
         return eventRepository.findById(eventId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId)));
     }
 
-    public User checkUser(long userId) {
+    private User getUserOrThrow(long userId) {
         return userRepository.findById(userId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("User with id=%d not found", userId)));
     }

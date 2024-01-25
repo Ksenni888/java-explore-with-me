@@ -39,7 +39,7 @@ public class RequestServiceImpl implements RequestService {
         Request request = new Request();
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("Event with id=%d was not found", eventId)));
-        User user = checkUser(userId);
+        User user = getUserOrThrow(userId);
         List<Request> requests = requestRepository.findAllByRequesterIdAndEventId(userId, eventId);
         if (!requests.isEmpty()) {
             throw new RulesViolationException("Your request added");
@@ -70,7 +70,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<ParticipationRequestDto> getRequestsPrivate(long userId) {
-        checkUser(userId);
+        getUserOrThrow(userId);
         log.info("Get user requests to event");
         return requestRepository.findAllByRequesterId(userId).stream()
                 .map(requestMapper::toDto).collect(Collectors.toList());
@@ -79,7 +79,7 @@ public class RequestServiceImpl implements RequestService {
     @Override
     @Transactional
     public ParticipationRequestDto cancelRequest(long userId, long requestId) {
-        checkUser(userId);
+        getUserOrThrow(userId);
         Request request = requestRepository.findById(requestId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("Request with id=%d not found", requestId)));
         request.setStatus(RequestStatus.CANCELED);
@@ -88,7 +88,7 @@ public class RequestServiceImpl implements RequestService {
         return requestMapper.toDto(request);
     }
 
-    public User checkUser(long id) {
+    private User getUserOrThrow(long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("User with id=%d not found", id)));
     }

@@ -36,7 +36,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public void deleteCategory(long categoryId) {
-        checkCategory(categoryId);
+        getCategoryOrThrow(categoryId);
         if (eventRepository.findAllByCategoryId(categoryId) != null) {
             throw new RulesViolationException(
                     String.format("Category with id=%d can't remove, because have events", categoryId));
@@ -48,7 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryDto updateCategory(long categoryId, CategoryDto categoryDto) {
-        Category category = checkCategory(categoryId);
+        Category category = getCategoryOrThrow(categoryId);
         category.setName(categoryDto.getName());
         log.info("Update category");
         return categoryMapper.toDto(categoryRepository.save(category));
@@ -65,12 +65,12 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto getCategory(long categoryId) {
-        Category category = checkCategory(categoryId);
+        Category category = getCategoryOrThrow(categoryId);
         log.info("Find category by id");
         return categoryMapper.toDto(category);
     }
 
-    public Category checkCategory(long id) {
+    private Category getCategoryOrThrow(long id) {
         return categoryRepository.findById(id).orElseThrow(
                 () -> new ObjectNotFoundException(
                         String.format("Category with id=%d was not found", id)));

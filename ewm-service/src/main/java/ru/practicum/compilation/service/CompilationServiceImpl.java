@@ -71,7 +71,7 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     @Transactional
     public CompilationDto updateCompilationAdmin(long compilationId, UpdateCompilationRequest updateCompilationRequest) {
-        Compilation compilation = checkoutCompilation(compilationId);
+        Compilation compilation = getCompilationOrThrow(compilationId);
 
         if (updateCompilationRequest.getEvents() != null && !updateCompilationRequest.getEvents().isEmpty()) {
             List<Event> events = eventRepository.findByIdIn(updateCompilationRequest.getEvents());
@@ -109,13 +109,13 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationDto findCompilationPublic(long compilationId) {
-        Compilation compilation = checkoutCompilation(compilationId);
+        Compilation compilation = getCompilationOrThrow(compilationId);
         return compilationMapper.toDto(compilation, getHitsEvent(compilationId,
                 LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)), true));
     }
 
-    public Compilation checkoutCompilation(long compilationId) {
+    private Compilation getCompilationOrThrow(long compilationId) {
         return compilationRepository.findById(compilationId).orElseThrow(
                 () -> new ObjectNotFoundException(String.format("Compilation with id=%d was not found", compilationId)));
     }
