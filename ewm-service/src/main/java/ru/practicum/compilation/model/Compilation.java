@@ -24,13 +24,16 @@ public class Compilation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "compilation_id")
     private long id;
+
     @ManyToMany
     @JoinTable(name = "compilation_event",
             joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<Event> events;
+
     @Column(name = "pinned")
     private Boolean pinned;
+
     @Column(name = "title")
     private String title;
 }

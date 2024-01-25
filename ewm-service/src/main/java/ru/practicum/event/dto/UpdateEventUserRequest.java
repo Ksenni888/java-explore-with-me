@@ -8,23 +8,32 @@ import ru.practicum.event.model.Location;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-import static ru.practicum.constant.Constants.DATA_FORMAT;
+import static ru.practicum.constant.Constants.DATE_FORMAT;
 
 @Getter
 @Setter
 public class UpdateEventUserRequest {
     @Size(min = 20, max = 2000)
     private String annotation;
+
     private long category;
+
     @Size(min = 20, max = 7000)
     private String description;
-    @JsonFormat(pattern = DATA_FORMAT)
+
+    @JsonFormat(pattern = DATE_FORMAT)
     private LocalDateTime eventDate;
+
     private Location location;
+
     private Boolean paid;
+
     private Integer participantLimit;
+
     private Boolean requestModeration;
+
     private String stateAction;
+
     @Size(min = 3, max = 120)
     private String title;
 }

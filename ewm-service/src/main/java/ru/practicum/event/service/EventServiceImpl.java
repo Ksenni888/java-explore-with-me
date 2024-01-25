@@ -49,7 +49,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.constant.Constants.DATA_FORMAT;
+import static ru.practicum.constant.Constants.DATE_FORMAT;
 
 @Service
 @RequiredArgsConstructor
@@ -78,8 +78,8 @@ public class EventServiceImpl implements EventService {
 
         log.info("Add new event");
         return eventMapper.toFull(event, getHitsEvent(event.getId(),
-                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)), false));
+                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false));
     }
 
     @Override
@@ -87,8 +87,8 @@ public class EventServiceImpl implements EventService {
         log.info("Get owner events");
         return eventRepository.findAllByInitiatorId(userId, pageable).stream()
                 .map(e -> eventMapper.toShort(e, getHitsEvent(e.getId(),
-                        LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)), false)))
+                        LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false)))
                 .collect(Collectors.toList());
     }
 
@@ -97,8 +97,8 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findByInitiatorIdAndId(userId, eventId);
         log.info("Get information about event for owner");
         return eventMapper.toFull(event, getHitsEvent(event.getId(),
-                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)), false));
+                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false));
     }
 
     @Override
@@ -288,8 +288,8 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepository.findAll(specification, pageable).getContent();
 
         return events.stream().map(e -> eventMapper.toFull(e, getHitsEvent(e.getId(),
-                        LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)), false)))
+                        LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false)))
                 .collect(Collectors.toList());
     }
 
@@ -353,8 +353,8 @@ public class EventServiceImpl implements EventService {
         event.setId(eventId);
         eventRepository.save(event);
         return eventMapper.toFull(event, getHitsEvent(eventId,
-                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)), false));
+                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false));
     }
 
     @Override
@@ -430,8 +430,8 @@ public class EventServiceImpl implements EventService {
         List<Event> allEvents = eventRepository.findAll(specification, pageable).getContent();
         return allEvents.stream()
                 .map(r -> eventMapper.toShort(r, getHitsEvent(r.getId(),
-                        LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)), false)))
+                        LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false)))
                 .collect(Collectors.toList());
     }
 
@@ -447,13 +447,13 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findByIdAndState(id, EventState.PUBLISHED)
                 .orElseThrow(() -> new ObjectNotFoundException(String.format("Event with id=%d was not found", id)));
 
-        Long view = getHitsEvent(id, LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)), true);
+        Long view = getHitsEvent(id, LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true);
 
         return eventMapper.toFull(event, view);
     }
 
-    public Long getHitsEvent(long eventId, String start, String end, Boolean unique) {
+    private Long getHitsEvent(long eventId, String start, String end, Boolean unique) {
 
         List<String> uris = new ArrayList<>();
         uris.add("/events/" + eventId);

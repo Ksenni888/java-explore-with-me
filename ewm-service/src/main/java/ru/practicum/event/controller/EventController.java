@@ -32,7 +32,7 @@ import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ru.practicum.constant.Constants.DATA_FORMAT;
+import static ru.practicum.constant.Constants.DATE_FORMAT;
 
 @RestController
 @RequiredArgsConstructor
@@ -90,8 +90,8 @@ public class EventController {
     public List<EventFullDto> getEventsAdmin(@RequestParam(required = false) List<Long> users,
                                              @RequestParam(required = false) List<String> states,
                                              @RequestParam(required = false) List<Long> categories,
-                                             @RequestParam(required = false) @DateTimeFormat(pattern = DATA_FORMAT) LocalDateTime rangeStart,
-                                             @RequestParam(required = false) @DateTimeFormat(pattern = DATA_FORMAT) LocalDateTime rangeEnd,
+                                             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_FORMAT) LocalDateTime rangeStart,
+                                             @RequestParam(required = false) @DateTimeFormat(pattern = DATE_FORMAT) LocalDateTime rangeEnd,
                                              @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
                                              @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
         EventAdminParam eventAdminParam = new EventAdminParam();
@@ -118,8 +118,8 @@ public class EventController {
             @RequestParam(required = false) String text,
             @RequestParam(required = false) List<Long> categories,
             @RequestParam(required = false) Boolean paid,
-            @RequestParam(required = false) @DateTimeFormat(pattern = DATA_FORMAT) LocalDateTime rangeStart,
-            @RequestParam(required = false) @DateTimeFormat(pattern = DATA_FORMAT) LocalDateTime rangeEnd,
+            @RequestParam(required = false) @DateTimeFormat(pattern = DATE_FORMAT) LocalDateTime rangeStart,
+            @RequestParam(required = false) @DateTimeFormat(pattern = DATE_FORMAT) LocalDateTime rangeEnd,
             @RequestParam(required = false, defaultValue = "false") Boolean onlyAvailable,
             @RequestParam(required = false) String sort,
             @RequestParam(required = false, defaultValue = "0") Integer from,

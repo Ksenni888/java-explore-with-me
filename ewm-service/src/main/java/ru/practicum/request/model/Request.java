@@ -18,7 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
 
-import static ru.practicum.constant.Constants.DATA_FORMAT;
+import static ru.practicum.constant.Constants.DATE_FORMAT;
 
 @Getter
 @Setter
@@ -29,15 +29,19 @@ public class Request {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "request_id")
     private long id;
-    @JsonFormat(pattern = DATA_FORMAT)
+
+    @JsonFormat(pattern = DATE_FORMAT)
     @Column(name = "created")
     private LocalDateTime created;
+
     @ManyToOne
     @JoinColumn(name = "event_id", nullable = false)
     private Event event;
+
     @ManyToOne
     @JoinColumn(name = "requester_id", nullable = false)
     private User requester;
+
     @Enumerated(value = EnumType.STRING)
     private RequestStatus status;
 }

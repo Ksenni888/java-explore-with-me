@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.constant.Constants.DATA_FORMAT;
+import static ru.practicum.constant.Constants.DATE_FORMAT;
 
 @Service
 @Transactional(readOnly = true)
@@ -85,8 +85,8 @@ public class CompilationServiceImpl implements CompilationService {
             compilation.setPinned(updateCompilationRequest.getPinned());
         }
         compilationRepository.save(compilation);
-        Long view = getHitsEvent(compilationId, LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)), true);
+        Long view = getHitsEvent(compilationId, LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true);
         return compilationMapper.toDto(compilation, view);
     }
 
@@ -95,15 +95,15 @@ public class CompilationServiceImpl implements CompilationService {
         if (pinned == null) {
             return compilationRepository.findAll(pageable).stream()
                     .map(c -> compilationMapper.toDto(c, getHitsEvent(c.getId(),
-                            LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
-                            LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)), true)))
+                            LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                            LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true)))
                     .collect(Collectors.toList());
         }
 
         return compilationRepository.findAllByPinned(pinned, pageable).stream()
                 .map(c -> compilationMapper.toDto(c, getHitsEvent(c.getId(),
-                        LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
-                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)), true)))
+                        LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true)))
                 .collect(Collectors.toList());
     }
 
@@ -111,8 +111,8 @@ public class CompilationServiceImpl implements CompilationService {
     public CompilationDto findCompilationPublic(long compilationId) {
         Compilation compilation = getCompilationOrThrow(compilationId);
         return compilationMapper.toDto(compilation, getHitsEvent(compilationId,
-                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATA_FORMAT)),
-                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATA_FORMAT)), true));
+                LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), true));
     }
 
     private Compilation getCompilationOrThrow(long compilationId) {
@@ -120,7 +120,7 @@ public class CompilationServiceImpl implements CompilationService {
                 () -> new ObjectNotFoundException(String.format("Compilation with id=%d was not found", compilationId)));
     }
 
-    public Long getHitsEvent(long eventId, String start, String end, Boolean unique) {
+    private Long getHitsEvent(long eventId, String start, String end, Boolean unique) {
 
         List<String> uris = new ArrayList<>();
         uris.add("/events/" + eventId);

@@ -11,7 +11,7 @@ import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
-import static ru.practicum.constant.Constants.DATA_FORMAT;
+import static ru.practicum.constant.Constants.DATE_FORMAT;
 
 @Getter
 @Setter
@@ -19,21 +19,29 @@ public class NewEventDto {
     @NotNull
     @Size(min = 20, max = 2000)
     private String annotation;
+
     @NotNull
     @Positive
     private long category;
+
     @NotNull
     @Size(min = 20, max = 7000)
     private String description;
+
     @NotNull
-    @JsonFormat(pattern = DATA_FORMAT)
+    @JsonFormat(pattern = DATE_FORMAT)
     private LocalDateTime eventDate;
+
     @NotNull
     private Location location;
+
     private Boolean paid;
+
     @PositiveOrZero
     private Integer participantLimit;
+
     private Boolean requestModeration;
+
     @NotNull
     @Size(min = 3, max = 120)
     private String title;

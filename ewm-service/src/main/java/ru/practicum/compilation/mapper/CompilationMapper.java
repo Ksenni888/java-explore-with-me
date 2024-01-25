@@ -19,7 +19,7 @@ public class CompilationMapper {
         compilationDto.setPinned(compilation.getPinned() != null && compilation.getPinned());
         compilationDto.setTitle(compilation.getTitle());
         compilationDto.setEvents(compilation.getEvents().stream()
-                .map(x -> eventMapper.toShort(x, 0L))
+                .map(x -> eventMapper.toShort(x, view))
                 .collect(Collectors.toList()));
         return compilationDto;
     }

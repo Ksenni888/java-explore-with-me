@@ -11,36 +11,51 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 
-import static ru.practicum.constant.Constants.DATA_FORMAT;
+import static ru.practicum.constant.Constants.DATE_FORMAT;
 
 @Getter
 @Setter
 public class EventFullDto {
     private long id;
+
     @NotNull
     private String annotation;
+
     @NotNull
     private CategoryDto category;
+
     private Integer confirmedRequests;
-    @JsonFormat(pattern = DATA_FORMAT)
+
+    @JsonFormat(pattern = DATE_FORMAT)
     private LocalDateTime createdOn;
+
     private String description;
+
     @NotNull
-    @JsonFormat(pattern = DATA_FORMAT)
+    @JsonFormat(pattern = DATE_FORMAT)
     private LocalDateTime eventDate;
+
     @NotNull
     private UserShortDto initiator;
+
     @NotNull
     private Location location;
+
     @NotNull
     private Boolean paid;
+
     @PositiveOrZero
     private Integer participantLimit;
-    @JsonFormat(pattern = DATA_FORMAT)
+
+    @JsonFormat(pattern = DATE_FORMAT)
     private LocalDateTime publishedOn;
+
     private Boolean requestModeration;
+
     private String state;
+
     @NotNull
     private String title;
+
     private Long views;
 }

@@ -8,15 +8,18 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-import static ru.practicum.constant.Constants.DATA_FORMAT;
+import static ru.practicum.constant.Constants.DATE_FORMAT;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class ErrorResponse {
     private final HttpStatus status;
+
     private final String reason;
+
     private final String message;
-    @JsonFormat(pattern = DATA_FORMAT)
+
+    @JsonFormat(pattern = DATE_FORMAT)
     private final LocalDateTime timestamp;
 }
