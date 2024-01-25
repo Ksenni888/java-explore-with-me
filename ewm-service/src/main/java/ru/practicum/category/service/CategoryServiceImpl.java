@@ -47,8 +47,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public CategoryDto updateCategory(long categoryId, CategoryDto categoryDto) {
-        Category category = getCategoryOrThrow(categoryId);
+    public CategoryDto updateCategory(CategoryDto categoryDto) {
+        Category category = getCategoryOrThrow(categoryDto.getId());
         category.setName(categoryDto.getName());
         log.info("Update category");
         return categoryMapper.toDto(categoryRepository.save(category));
