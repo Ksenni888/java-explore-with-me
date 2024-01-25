@@ -12,7 +12,7 @@ public interface CompilationService {
 
     CompilationDto addCompilationAdmin(NewCompilationDto newCompilationDto);
 
-    void deleteCompilationAdmin(@PathVariable long compilationId);
+    void deleteCompilationAdmin(long compilationId);
 
     CompilationDto updateCompilationAdmin(long compilationId, UpdateCompilationRequest updateCompilationRequest);
 
