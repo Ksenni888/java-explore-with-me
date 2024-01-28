@@ -1,4 +1,3 @@
---drop table IF EXISTS categories, users, events, requests, compilations, compilation_event, users_authors;
 create TABLE IF NOT EXISTS categories (
     category_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     category_name VARCHAR(50) NOT NULL,
