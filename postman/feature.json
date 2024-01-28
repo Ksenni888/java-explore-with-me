@@ -1,0 +1,789 @@
+{
+	"info": {
+		"_postman_id": "35f5956f-e262-4610-9f71-72ba543ff08f",
+		"name": "feature",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29158217"
+	},
+	"item": [
+		{
+			"name": "Add subscribe",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен иметь код 201 и тело в формате json\", () => {\r",
+							"    pm.response.to.have.status(201);\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"pm.test(\"Поле subscribers должно быть массивом\", () => {\r",
+							"   pm.expect(pm.response.json().subscribers).to.be.an('array');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/:authorId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						":authorId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User id and author id is equal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен иметь код 409 и тело в формате json\", () => {\r",
+							"    pm.response.to.have.status(409);\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/:authorId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						":authorId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User subscribed on user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Пользователь уже подписан\", () => {\r",
+							"    pm.expect(pm.response.code).to.equal(409);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/:authorId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						":authorId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get list of subscriptions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен иметь код 200\", () => {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"pm.test(\"Поле subscribers должно быть массивом\", () => {\r",
+							"pm.expect(pm.response.json().subscribers).to.be.an('array');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						""
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get events by author",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен иметь код 200\", () => {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/:authorId/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						":authorId",
+						"events"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get events by author with negative param",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Тест на валидацию параметров\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(500);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/:authorId/events?from=-1&size=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						":authorId",
+						"events"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "-1"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						}
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get events by author standart params successful",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен содержать код статуса 200 и данные в формате json\", function() {\r",
+							"    pm.response.to.be.ok;\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"}); \r",
+							"\r",
+							"pm.test(\"Ответ должен быть списком событий\", function() {\r",
+							"    const body = pm.response.json();\r",
+							"    pm.expect(body).is.an('array');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/:authorId/events?from=1&size=10",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						":authorId",
+						"events"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "1"
+						},
+						{
+							"key": "size",
+							"value": "10"
+						}
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get events by author with same id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен иметь код 409\", () => {\r",
+							"    pm.expect(pm.response.code).to.equal(409);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/:authorId/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						":authorId",
+						"events"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get events by author which not in list of subscriptions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен иметь код 404\", () => {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/:authorId/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						":authorId",
+						"events"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get events by author with zero param",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Тест на валидацию параметров\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(500);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/:authorId/events?from=0&size=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						":authorId",
+						"events"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "0"
+						}
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all events",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Тест на валидацию параметров\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"pm.test(\"Ответ должен быть массивом\", () => {\r",
+							"   pm.expect(pm.response.json()).to.be.an('array');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/subscriptions/:userId/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"subscriptions",
+						":userId",
+						"events"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all events with negative param",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Тест на валидацию параметров\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(500);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/subscriptions/:userId/events?from=2&size=-1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"subscriptions",
+						":userId",
+						"events"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "2"
+						},
+						{
+							"key": "size",
+							"value": "-1"
+						}
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all events with successful param",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Тест на валидацию параметров\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/subscriptions/:userId/events?from=0&size=2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						"subscriptions",
+						":userId",
+						"events"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "0"
+						},
+						{
+							"key": "size",
+							"value": "2"
+						}
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete subscription",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен иметь код 204 и пустое тело\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(204);\r",
+							"    pm.expect(pm.request.body.isEmpty);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/:authorId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						":authorId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete author with same id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен иметь код 409\", function() {\r",
+							"    pm.expect(pm.response.code).to.equal(409);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/:authorId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						":authorId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete author which not in list of subscriptions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Ответ должен иметь код 404\", () => {\r",
+							"    pm.expect(pm.response.code).to.equal(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users/:userId/subscriptions/:authorId",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"users",
+						":userId",
+						"subscriptions",
+						":authorId"
+					],
+					"variable": [
+						{
+							"key": "userId",
+							"value": "1"
+						},
+						{
+							"key": "authorId",
+							"value": "3"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
