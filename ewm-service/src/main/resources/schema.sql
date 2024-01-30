@@ -57,9 +57,9 @@ create TABLE IF NOT EXISTS compilation_event (
 );
 
 CREATE TABLE IF NOT EXISTS users_authors (
-  user_id BIGINT NOT NULL,
-  author_id BIGINT NOT NULL,
-  PRIMARY KEY (user_id, author_id),
-  FOREIGN KEY(user_id) REFERENCES users(user_id),
-  FOREIGN KEY(author_id) REFERENCES users(user_id)
+   user_id BIGINT NOT NULL,
+   author_id BIGINT NOT NULL,
+   PRIMARY KEY (user_id, author_id),
+   FOREIGN KEY(user_id) REFERENCES users(user_id),
+   FOREIGN KEY(author_id) REFERENCES users(user_id)
 );

@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class UserServiceImp implements UserService {
     private static final Logger log = LoggerFactory.getLogger(UserServiceImp.class);
     private final UserMapper userMapper;
@@ -33,6 +32,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserDto> getUsersAdmin(List<Long> ids, Pageable pageable) {
         log.info("Get list of users by ids");
         if (ids == null || ids.isEmpty()) {
@@ -90,6 +90,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserWithSubscribers getUserWithSubscribers(long userId, Pageable pageable) {
         User user = getUserOrThrow(userId);
         return userMapper.toUserDtoWithSubscribers(user);
