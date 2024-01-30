@@ -2,6 +2,7 @@ package ru.practicum.event.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -144,5 +145,23 @@ public class EventController {
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto getEventByIdPublic(@PathVariable long id, HttpServletRequest request) {
         return eventService.getEventByIdPublic(id, request);
+    }
+
+    @GetMapping("/users/{userId}/subscriptions/{authorId}/events")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventFullDto> findEventsByUser(@PathVariable long userId,
+                                               @PathVariable long authorId,
+                                               @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+                                               @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
+
+        return eventService.findEventsByUser(userId, authorId, PageRequest.of(from / size, size, Sort.by("eventDate").descending()));
+    }
+
+    @GetMapping("/users/subscriptions/{userId}/events")
+    @ResponseStatus(HttpStatus.OK)
+    public List<EventShortDto> findEventsByAllUsers(@PathVariable long userId,
+                                                    @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+                                                    @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size) {
+        return eventService.findEventsByAllUsers(userId, PageRequest.of(from / size, size, Sort.by("eventDate").descending()));
     }
 }

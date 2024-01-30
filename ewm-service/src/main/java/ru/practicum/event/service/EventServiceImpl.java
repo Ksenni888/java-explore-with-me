@@ -453,6 +453,43 @@ public class EventServiceImpl implements EventService {
         return eventMapper.toFull(event, view);
     }
 
+    @Override
+    public List<EventFullDto> findEventsByUser(long userId, long authorId, Pageable pageable) {
+        if (userId == authorId) {
+            throw new RulesViolationException("User can't be subscribe to himself");
+        }
+        User user = getUserOrThrow(userId);
+        User subscriber = getUserOrThrow(authorId);
+        if (!user.getSubscriptions().contains(subscriber)) {
+            throw new ObjectNotFoundException("User with id " + userId + " did not subscribe on user with id" +
+                    authorId);
+        }
+        List<Event> events = eventRepository.findByInitiatorIdAndState(authorId, EventState.PUBLISHED, pageable);
+        log.info("User with id={} events found for subscriber id={}", userId, authorId);
+        return events.stream().map(e -> eventMapper.toFull(e, getHitsEvent(e.getId(),
+                        LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false)))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<EventShortDto> findEventsByAllUsers(long userId, Pageable pageable) {
+
+        User subscriber = getUserOrThrow(userId);
+        if (subscriber.getSubscriptions().isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Long> usersIds = subscriber.getSubscriptions().stream().map(User::getId).collect(Collectors.toList());
+
+        List<Event> events = eventRepository.findByStateAndInitiatorIdIn(EventState.PUBLISHED, usersIds, pageable);
+
+        log.info("Found all events from users for subscriber with id={}", userId);
+        return events.stream().map(e -> eventMapper.toShort(e, getHitsEvent(e.getId(),
+                        LocalDateTime.now().minusDays(100).format(DateTimeFormatter.ofPattern(DATE_FORMAT)),
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT)), false)))
+                .collect(Collectors.toList());
+    }
+
     private Long getHitsEvent(long eventId, String start, String end, Boolean unique) {
 
         List<String> uris = new ArrayList<>();
